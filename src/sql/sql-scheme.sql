@@ -4,9 +4,9 @@
 -- ----------------------------
 DROP TABLE IF EXISTS province;
 CREATE TABLE IF NOT EXISTS province (
-  id BIGINT NOT NULL auto_increment,
-  province_id int(11) NOT NULL,
-  province varchar(20) NOT NULL,
+  id BIGINT NOT NULL auto_increment COMMENT '设置主键自增',
+  province_id int(11) NOT NULL COMMENT '设置编号',
+  province varchar(20) NOT NULL COMMENT '省份的名称',
   PRIMARY KEY  (id)
 )CHARSET=utf8 ENGINE=InnoDB;
 
@@ -73,15 +73,15 @@ CREATE UNIQUE INDEX idx_roles_role ON roles(role);
 -- Table structure for permissions
 -- 权限
 -- -------------------------------
-DROP TABLE IF EXISTS permissions;
-CREATE TABLE permissions (
-  id BIGINT AUTO_INCREMENT COMMENT '设置主键自增',
-  permission VARCHAR(255) COMMENT '权限',
-  description VARCHAR(255) COMMENT '描述',
-  available bool DEFAULT FALSE COMMENT '是否可获得 0-false-不可获得    1-true-可获得',
-  CONSTRAINT pk_permissions PRIMARY KEY(id)
-) CHARSET=utf8 ENGINE=InnoDB;
-CREATE UNIQUE INDEX idx_permissions_permission ON permissions(permission);
+-- DROP TABLE IF EXISTS permissions;
+-- CREATE TABLE permissions (
+--   id BIGINT AUTO_INCREMENT COMMENT '设置主键自增',
+--   permission VARCHAR(255) COMMENT '权限',
+--   description VARCHAR(255) COMMENT '描述',
+--   available bool DEFAULT FALSE COMMENT '是否可获得 0-false-不可获得    1-true-可获得',
+--   CONSTRAINT pk_permissions PRIMARY KEY(id)
+-- ) CHARSET=utf8 ENGINE=InnoDB;
+-- CREATE UNIQUE INDEX idx_permissions_permission ON permissions(permission);
 
 -- -------------------------------
 -- Table structure for users_roles
@@ -98,17 +98,22 @@ CREATE TABLE users_roles (
 -- Table structure for roles_permissions
 -- 角色权限
 -- -------------------------------------
-DROP TABLE IF EXISTS roles_permissions;
-CREATE TABLE roles_permissions (
-  role_id BIGINT COMMENT 'roles的id',
-  permission_id BIGINT COMMENT 'permissions的id',
-  CONSTRAINT pk_roles_permissions PRIMARY KEY(role_id, permission_id)
-) CHARSET=utf8 ENGINE=InnoDB;
+--  DROP TABLE IF EXISTS roles_permissions;
+--  CREATE TABLE roles_permissions (
+--    role_id BIGINT COMMENT 'roles的id',
+--    permission_id BIGINT COMMENT 'permissions的id',
+--    CONSTRAINT pk_roles_permissions PRIMARY KEY(role_id, permission_id)
+--  ) CHARSET=utf8 ENGINE=InnoDB;
 
 -- -----------------------------
 -- Table structure for area_info
 -- 园区信息表
--- -----------------------------
+-- ----------------------------------------------
+-- attention 园区编号   area_no字段
+-- 人为保证唯一，如果已经有编号，直接使用编号，如 B1
+-- 如果没有编号，则使用英文名称，如 hz
+-- 如果没有英文名称，则使用中文拼音简写形式，如 hz
+-- ----------------------------------------------
 DROP TABLE IF EXISTS area_info;
 create table area_info(
   id BIGINT AUTO_INCREMENT COMMENT '设置主键自增',
@@ -126,6 +131,11 @@ create table area_info(
 -- Table structure for building_info
 -- 大楼信息表
 -- ---------------------------------
+-- attention 大楼编号   building_no字段
+-- 人为保证唯一，如果已经有编号，直接使用编号，如 B1
+-- 如果没有编号，则使用英文名称，如 hz
+-- 如果没有英文名称，则使用中文拼音简写形式，如 hz
+-- ----------------------------------------------
 DROP TABLE IF EXISTS building_info;
 create table building_info(
   id BIGINT AUTO_INCREMENT COMMENT '设置主键自增',
@@ -136,10 +146,15 @@ create table building_info(
   CONSTRAINT pk_building_info PRIMARY KEY (id)
 )CHARSET=utf8 ENGINE=InnoDB;
 
--- ----------------------------------
+-- ---------------------------------
 -- Table structure for company_info
 -- 公司信息表
 -- ---------------------------------
+-- attention 公司编号   company_no
+-- 人为保证唯一，如果已经有编号，直接使用编号，如 B1
+-- 如果没有编号，则使用英文名称，如 hz
+-- 如果没有英文名称，则使用中文拼音简写形式，如 hz
+-- ----------------------------------------------
 DROP TABLE IF EXISTS company_info;
 CREATE TABLE company_info(
   id BIGINT AUTO_INCREMENT COMMENT '设置主键自增',

@@ -2,8 +2,8 @@
 -- Table data for area_info
 -- 园区 - 数据
 -- ------------------------
-INSERT INTO area_info(area_no, area_name, provice_id, city_id, area_id, address, jigou) VALUES ("1","湖州",11,94,971,"某某大道100号","中节能");
-INSERT INTO area_info(area_no, area_name, provice_id, city_id, area_id, address, jigou) VALUES ("2","西湖国际",11,94,971,"某莫某路10000号","中节能");
+INSERT INTO area_info(area_no, area_name, provice_id, city_id, area_id, address, jigou) VALUES ("hz","湖州",11,94,971,"某某大道100号","中节能");
+INSERT INTO area_info(area_no, area_name, provice_id, city_id, area_id, address, jigou) VALUES ("xhgj","西湖国际",11,94,971,"某莫某路10000号","中节能");
 
 -- ----------------------------
 -- Table data for building_info
@@ -144,3 +144,50 @@ INSERT power_info(number, price_id, collector_id, address, company_id, belong, c
 -- Table data for power_meter_record
 -- 电表读数 - 数据
 -- -------------------------
+
+
+
+
+-- ------------------------
+-- Table data for user_info
+-- 用户 - 数据
+-- ------------------------
+-- 账号：admin  密码：admin
+INSERT INTO user_info(user_no, username, area_id, building_id, company_id, password, salt, locked) VALUES ('001','admin',NULL ,NULL ,NULL ,'d3c59d25033dbf980d29554025c23a75','8d78869f470951332959580424d4bf4f',FALSE );
+-- 账号：hzadmin 密码：admin
+INSERT INTO user_info(user_no, username, area_id, building_id, company_id, password, salt, locked) VALUES ('002','hzadmin',1 ,NULL ,NULL ,'d3c59d25033dbf980d29554025c23a75','8d78869f470951332959580424d4bf4f',FALSE );
+-- 账号：湖州一号楼管 密码：admin
+INSERT INTO user_info(user_no, username, area_id, building_id, company_id, password, salt, locked) VALUES ('003','湖州一号楼管',1,1,NULL ,'d3c59d25033dbf980d29554025c23a75','8d78869f470951332959580424d4bf4f',FALSE );
+-- 账号：你好有限公司管理员 密码：admin    属于一号楼
+INSERT INTO user_info(user_no, username, area_id, building_id, company_id, password, salt, locked) VALUES ('003','001发展有限公司管理员',1,1,1 ,'d3c59d25033dbf980d29554025c23a75','8d78869f470951332959580424d4bf4f',FALSE );
+-- 账号：你好有限公司成员 密码：admin      属于一号楼
+INSERT INTO user_info(user_no, username, area_id, building_id, company_id, password, salt, locked) VALUES ('003','001发展有限公司01',1,1,1 ,'d3c59d25033dbf980d29554025c23a75','8d78869f470951332959580424d4bf4f',FALSE );
+INSERT INTO user_info(user_no, username, area_id, building_id, company_id, password, salt, locked) VALUES ('003','001发展有限公司02',1,1,1 ,'d3c59d25033dbf980d29554025c23a75','8d78869f470951332959580424d4bf4f',FALSE );
+
+-- ------------------------
+-- Table data for user_info
+-- 用户 - 数据
+-- ------------------------
+-- 拼接规则：
+-- admin：整个系统的管理员
+-- {area_no}.admin：园区管理员（比如 hz.admin 表示湖州管理员岗位）
+-- {area_no}.{building_no}.admin：大楼管理员（比如 hz.B1.admin 表示湖州B1楼管理员岗位）
+-- {area_no}.{building_no}.{company_no}.admin：公司管理员（比如 hz.B1.001.admin 表示湖州B1楼001有限公司管理员岗位）
+-- {area_no}.{building_no}.{company_no}.view：公司管理员（比如 hz.B1.001.view 表示湖州B1楼001有限公司普通岗位）
+-- ------------------------
+INSERT INTO roles(role, description, available) VALUES ('admin','管理员',TRUE );
+INSERT INTO roles(role, description, available) VALUES ('hz.admin','湖州.管理员',TRUE );
+INSERT INTO roles(role, description, available) VALUES ('hz.B1.admin','湖州.B1.管理员',TRUE );
+INSERT INTO roles(role, description, available) VALUES ('hz.B1.001.admin','湖州.B1.001.管理员',TRUE );
+INSERT INTO roles(role, description, available) VALUES ('hz.B1.001.view','湖州.B1.001.普通',TRUE );
+
+-- --------------------------
+-- Table data for users_roles
+-- 用户 角色 - 数据
+-- --------------------------
+INSERT INTO users_roles(user_id, role_id) VALUES (1,1);
+INSERT INTO users_roles(user_id, role_id) VALUES (2,2);
+INSERT INTO users_roles(user_id, role_id) VALUES (3,3);
+INSERT INTO users_roles(user_id, role_id) VALUES (4,4);
+INSERT INTO users_roles(user_id, role_id) VALUES (5,5);
+INSERT INTO users_roles(user_id, role_id) VALUES (6,5);
