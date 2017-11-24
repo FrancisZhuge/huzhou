@@ -73,15 +73,15 @@ CREATE UNIQUE INDEX idx_roles_role ON roles(role);
 -- Table structure for permissions
 -- 权限
 -- -------------------------------
--- DROP TABLE IF EXISTS permissions;
--- CREATE TABLE permissions (
---   id BIGINT AUTO_INCREMENT COMMENT '设置主键自增',
---   permission VARCHAR(255) COMMENT '权限',
---   description VARCHAR(255) COMMENT '描述',
---   available bool DEFAULT FALSE COMMENT '是否可获得 0-false-不可获得    1-true-可获得',
---   CONSTRAINT pk_permissions PRIMARY KEY(id)
--- ) CHARSET=utf8 ENGINE=InnoDB;
--- CREATE UNIQUE INDEX idx_permissions_permission ON permissions(permission);
+ DROP TABLE IF EXISTS permissions;
+ CREATE TABLE permissions (
+   id BIGINT AUTO_INCREMENT COMMENT '设置主键自增',
+   permission VARCHAR(255) COMMENT '权限',
+   description VARCHAR(255) COMMENT '描述',
+   available bool DEFAULT FALSE COMMENT '是否可获得 0-false-不可获得    1-true-可获得',
+   CONSTRAINT pk_permissions PRIMARY KEY(id)
+ ) CHARSET=utf8 ENGINE=InnoDB;
+ CREATE UNIQUE INDEX idx_permissions_permission ON permissions(permission);
 
 -- -------------------------------
 -- Table structure for users_roles
@@ -98,12 +98,12 @@ CREATE TABLE users_roles (
 -- Table structure for roles_permissions
 -- 角色权限
 -- -------------------------------------
---  DROP TABLE IF EXISTS roles_permissions;
---  CREATE TABLE roles_permissions (
---    role_id BIGINT COMMENT 'roles的id',
---    permission_id BIGINT COMMENT 'permissions的id',
---    CONSTRAINT pk_roles_permissions PRIMARY KEY(role_id, permission_id)
---  ) CHARSET=utf8 ENGINE=InnoDB;
+  DROP TABLE IF EXISTS roles_permissions;
+  CREATE TABLE roles_permissions (
+    role_id BIGINT COMMENT 'roles的id',
+    permission_id BIGINT COMMENT 'permissions的id',
+    CONSTRAINT pk_roles_permissions PRIMARY KEY(role_id, permission_id)
+  ) CHARSET=utf8 ENGINE=InnoDB;
 
 -- -----------------------------
 -- Table structure for area_info
@@ -278,6 +278,20 @@ CREATE TABLE power_info(
   comment2 VARCHAR(255) DEFAULT NULL COMMENT '备注2',
   comment3 VARCHAR(255) DEFAULT NULL COMMENT '备注3',
   CONSTRAINT pk_power_info PRIMARY KEY (id)
+)CHARSET=utf8 ENGINE=InnoDB;
+
+-- --------------------------------------
+-- Table structure for pre_order_value
+-- 电表预购值
+-- 暂时没有开通这个功能
+-- --------------------------------------
+DROP TABLE IF EXISTS pre_order_value;
+CREATE TABLE pre_order_value(
+  id BIGINT AUTO_INCREMENT COMMENT '设置自增主键',
+  company_id BIGINT DEFAULT NULL COMMENT '公司的主键',
+  value FLOAT DEFAULT NULL COMMENT '预购值',
+  update_time DATETIME DEFAULT current_timestamp COMMENT '创建时间',
+  CONSTRAINT pk_pre_order_value PRIMARY KEY (id)
 )CHARSET=utf8 ENGINE=InnoDB;
 
 -- --------------------------------------

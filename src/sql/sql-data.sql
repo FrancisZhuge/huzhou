@@ -134,16 +134,43 @@ INSERT INTO water_meter_record(water_info_id, consumption, read_time) VALUES (3,
 -- Table data for power_info
 -- 电表基础信息 - 数据
 -- -------------------------
-INSERT power_info(number, price_id, collector_id, address, company_id, belong, consumption, outgoing, rate) VALUES ("001",4,1,"第二层角落",1,"","中节能","1P4",1.2);
-INSERT power_info(number, price_id, collector_id, address, company_id, belong, consumption, outgoing, rate) VALUES ("002",4,1,"第二层角落",2,"","中节能","1P4",1.2);
-INSERT power_info(number, price_id, collector_id, address, company_id, belong, consumption, outgoing, rate) VALUES ("003",4,1,"第二层角落",3,"","中节能","1P4",1.2);
-INSERT power_info(number, price_id, collector_id, address, company_id, belong, consumption, outgoing, rate) VALUES ("004",4,1,"第二层角落",4,"","中节能","1P4",1.2);
-INSERT power_info(number, price_id, collector_id, address, company_id, belong, consumption, outgoing, rate) VALUES ("005",4,1,"第二层角落",5,"","中节能","1P4",1.2);
+INSERT INTO power_info(number, price_id, collector_id, address, company_id, belong, consumption, outgoing, rate) VALUES ("001",4,1,"第二层角落",1,"","中节能","1P4",1.2);
+INSERT INTO power_info(number, price_id, collector_id, address, company_id, belong, consumption, outgoing, rate) VALUES ("002",4,1,"第二层角落",2,"","中节能","1P4",1.2);
+INSERT INTO power_info(number, price_id, collector_id, address, company_id, belong, consumption, outgoing, rate) VALUES ("003",4,1,"第二层角落",3,"","中节能","1P4",1.2);
+INSERT INTO power_info(number, price_id, collector_id, address, company_id, belong, consumption, outgoing, rate) VALUES ("004",4,1,"第二层角落",4,"","中节能","1P4",1.2);
+INSERT INTO power_info(number, price_id, collector_id, address, company_id, belong, consumption, outgoing, rate) VALUES ("005",4,1,"第二层角落",5,"","中节能","1P4",1.2);
 
 -- -------------------------
 -- Table data for power_meter_record
 -- 电表读数 - 数据
 -- -------------------------
+INSERT INTO power_meter_record(power_info_id,epp,read_time) VALUES (1,171120,"2017-11-20 08:00:00");
+INSERT INTO power_meter_record(power_info_id,epp,read_time) VALUES (1,171121,"2017-11-21 08:00:00");
+INSERT INTO power_meter_record(power_info_id,epp,read_time) VALUES (1,171122,"2017-11-22 08:00:00");
+INSERT INTO power_meter_record(power_info_id,epp,read_time) VALUES (1,171123,"2017-11-23 08:00:00");
+INSERT INTO power_meter_record(power_info_id,epp,read_time) VALUES (1,171124,"2017-11-24 08:00:00");
+INSERT INTO power_meter_record(power_info_id,epp,read_time) VALUES (1,171125,"2017-11-25 08:00:00");
+
+INSERT INTO power_meter_record(power_info_id,epp,read_time) VALUES (1,171020,"2017-10-20 08:00:00");
+INSERT INTO power_meter_record(power_info_id,epp,read_time) VALUES (1,171021,"2017-10-21 08:00:00");
+INSERT INTO power_meter_record(power_info_id,epp,read_time) VALUES (1,171022,"2017-10-22 08:00:00");
+INSERT INTO power_meter_record(power_info_id,epp,read_time) VALUES (1,171023,"2017-10-23 08:00:00");
+INSERT INTO power_meter_record(power_info_id,epp,read_time) VALUES (1,171024,"2017-10-24 08:00:00");
+INSERT INTO power_meter_record(power_info_id,epp,read_time) VALUES (1,171025,"2017-10-25 08:00:00");
+
+INSERT INTO power_meter_record(power_info_id,epp,read_time) VALUES (1,161120,"2016-11-20 08:00:00");
+INSERT INTO power_meter_record(power_info_id,epp,read_time) VALUES (1,161121,"2016-11-21 08:00:00");
+INSERT INTO power_meter_record(power_info_id,epp,read_time) VALUES (1,161122,"2016-11-22 08:00:00");
+INSERT INTO power_meter_record(power_info_id,epp,read_time) VALUES (1,161123,"2016-11-23 08:00:00");
+INSERT INTO power_meter_record(power_info_id,epp,read_time) VALUES (1,161124,"2016-11-24 08:00:00");
+INSERT INTO power_meter_record(power_info_id,epp,read_time) VALUES (1,161125,"2016-11-25 08:00:00");
+
+INSERT INTO power_meter_record(power_info_id,epp,read_time) VALUES (1,161020,"2016-10-20 08:00:00");
+INSERT INTO power_meter_record(power_info_id,epp,read_time) VALUES (1,161021,"2016-10-21 08:00:00");
+INSERT INTO power_meter_record(power_info_id,epp,read_time) VALUES (1,161022,"2016-10-22 08:00:00");
+INSERT INTO power_meter_record(power_info_id,epp,read_time) VALUES (1,161023,"2016-10-23 08:00:00");
+INSERT INTO power_meter_record(power_info_id,epp,read_time) VALUES (1,161024,"2016-10-24 08:00:00");
+INSERT INTO power_meter_record(power_info_id,epp,read_time) VALUES (1,161025,"2016-10-25 08:00:00");
 
 
 
@@ -191,3 +218,8 @@ INSERT INTO users_roles(user_id, role_id) VALUES (3,3);
 INSERT INTO users_roles(user_id, role_id) VALUES (4,4);
 INSERT INTO users_roles(user_id, role_id) VALUES (5,5);
 INSERT INTO users_roles(user_id, role_id) VALUES (6,5);
+
+-- ------------------------------
+-- Table data for pre_order_value
+-- 电表预购值 - 数据
+-- ------------------------------

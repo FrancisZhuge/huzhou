@@ -97,6 +97,12 @@ public class DataConfig {
     public SqlSessionFactoryBean sqlSessionFactoryBean(){
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
         sqlSessionFactoryBean.setDataSource(dataSource());
+        org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
+        configuration.setMapUnderscoreToCamelCase(true);
+        configuration.setCacheEnabled(true);
+        configuration.setDefaultStatementTimeout(3000);
+        configuration.setUseGeneratedKeys(true);
+        sqlSessionFactoryBean.setConfiguration(configuration);
         LOGGER.info("[DataConfig] create sqlSessionFactoryBean success");
         return sqlSessionFactoryBean;
     }

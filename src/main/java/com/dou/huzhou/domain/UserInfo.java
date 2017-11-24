@@ -19,7 +19,7 @@ public class UserInfo {
     private String password;
     private String salt;
     //是否锁定，默认锁定
-    private Boolean lock= Boolean.TRUE;
+    private Boolean locked= Boolean.TRUE;
 
     public UserInfo() {
     }
@@ -90,12 +90,12 @@ public class UserInfo {
         this.salt = salt;
     }
 
-    public Boolean getLock() {
-        return lock;
+    public Boolean getLocked() {
+        return locked;
     }
 
-    public void setLock(Boolean lock) {
-        this.lock = lock;
+    public void setLocked(Boolean locked) {
+        this.locked = locked;
     }
 
     public String getCredentialsSalt() {
@@ -113,7 +113,7 @@ public class UserInfo {
                 ", companyId=" + companyId +
                 ", password='" + password + '\'' +
                 ", salt='" + salt + '\'' +
-                ", lock=" + lock +
+                ", locked=" + locked +
                 '}';
     }
 }

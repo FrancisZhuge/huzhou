@@ -31,7 +31,7 @@ public class ResponseUtil {
      * @param data
      * @return
      */
-    public static String responseOkWithData(JSONObject data){
+    public static String responseOkWithData(Object data){
         AjaxBody ajaxBody = new AjaxBody();
         ajaxBody.setCode(ResponseCode.S_OK);
         ajaxBody.setData(data);
