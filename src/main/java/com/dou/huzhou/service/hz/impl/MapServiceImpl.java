@@ -90,24 +90,24 @@ public class MapServiceImpl implements MapService{
             LOGGER.error("getMapInfoByArea dao failed. ");
         }
         for(MapVo mapVo:mapVos){
-            //设置电表值
-            Long[] powerIds = powerService.getPowerIds(mapVo.getCompanyId());
-            if()
-            Double lastValue = 0D;
-            for(int i=0;i<)
-            if(lastValue == null){
-                mapVo.setPowerValue(0D);
-            }else {
-                Double lastMonthValue = powerService.getLastMonthValue(powerIds[0]);
-                if(lastMonthValue == null){
-                    mapVo.setPowerValue(lastValue);
-                }else {
-                    mapVo.setPowerValue(lastValue-lastMonthValue);
-                }
-            }
-            //设置水表值
-            Long[] waterIds = waterService.getWaterIds(mapVo.getCompanyId());
-            waterService.getLastValue(waterIds[0]);
+//            //设置电表值
+//            Long[] powerIds = powerService.getPowerIds(mapVo.getCompanyId());
+//            if()
+//            Double lastValue = 0D;
+//            for(int i=0;i<)
+//            if(lastValue == null){
+//                mapVo.setPowerValue(0D);
+//            }else {
+//                Double lastMonthValue = powerService.getLastMonthValue(powerIds[0]);
+//                if(lastMonthValue == null){
+//                    mapVo.setPowerValue(lastValue);
+//                }else {
+//                    mapVo.setPowerValue(lastValue-lastMonthValue);
+//                }
+//            }
+//            //设置水表值
+//            Long[] waterIds = waterService.getWaterIds(mapVo.getCompanyId());
+//            waterService.getLastValue(waterIds[0]);
 
         }
         return null;

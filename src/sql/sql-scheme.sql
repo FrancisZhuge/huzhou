@@ -46,7 +46,6 @@ CREATE TABLE user_info(
   user_no VARCHAR(255) COMMENT '用户编号',
   username varchar(255) COMMENT '用户名',
   area_id BIGINT COMMENT '园区信息表主键',
-  building_id BIGINT COMMENT '大楼信息表主键',
   company_id BIGINT COMMENT '公司表主键',
   password varchar(255) null COMMENT '密码',
   salt varchar(255) null COMMENT '盐',
@@ -108,12 +107,7 @@ CREATE TABLE users_roles (
 -- -----------------------------
 -- Table structure for area_info
 -- 园区信息表
--- ----------------------------------------------
--- attention 园区编号   area_no字段
--- 人为保证唯一，如果已经有编号，直接使用编号，如 B1
--- 如果没有编号，则使用英文名称，如 hz
--- 如果没有英文名称，则使用中文拼音简写形式，如 hz
--- ----------------------------------------------
+-- -----------------------------
 DROP TABLE IF EXISTS area_info;
 create table area_info(
   id BIGINT AUTO_INCREMENT COMMENT '设置主键自增',
@@ -165,7 +159,6 @@ CREATE TABLE building_company(
   building_id BIGINT NULL COMMENT '大楼编号',
   company_id BIGINT NULL COMMENT '公司编号'
 )CHARSET=utf8 ENGINE=InnoDB;
-
 
 
 -- Table structure for user_meter_info

@@ -21,15 +21,15 @@ public interface UserDao {
     //角色表
     String TABLE_ROLE = "roles";
     //插入字段
-    String INSERT_FIELDS = "user_no, username, area_id, building_id, company_id, password, salt, locked";
+    String INSERT_FIELDS = "user_no, username, area_id, company_id, password, salt, locked";
     //查找字段
-    String SELECT_FIELDS = "id, user_no, username, area_id, building_id, company_id, password, salt, locked";
+    String SELECT_FIELDS = "id, user_no, username, area_id, company_id, password, salt, locked";
 
     /**
      * 新增用户
      * @param userInfo
      */
-    @Insert({" insert into ", TABLE_USER ," ( ", INSERT_FIELDS ," )values(#{userInfo.userNo},#{userInfo.username},#{userInfo.areaId},#{userInfo.buildingId},#{userInfo.companyId},#{userInfo.password},#{userInfo.salt},#{userInfo.locked}) "})
+    @Insert({" insert into ", TABLE_USER ," ( ", INSERT_FIELDS ," )values(#{userInfo.userNo},#{userInfo.username},#{userInfo.areaId},#{userInfo.companyId},#{userInfo.password},#{userInfo.salt},#{userInfo.locked}) "})
     @Options(useGeneratedKeys = true,keyProperty = "userInfo.id")
     void saveUser(@Param("userInfo")UserInfo userInfo);
 
