@@ -1,5 +1,6 @@
 package com.dou.huzhou.service.hz;
 
+import com.dou.huzhou.domain.Role;
 import com.dou.huzhou.domain.UserInfo;
 
 /**
@@ -17,4 +18,18 @@ public interface RoleService {
      * @return
      */
     String spellAdminRole(UserInfo user);
+
+    /**
+     * 新增一个角色
+     * @param role
+     * @return
+     */
+    Role saveRole(Role role);
+
+    /**
+     * 根据role查找一个角色
+     * @param role
+     * @return
+     */
+    Role getByRole(String role);
 }

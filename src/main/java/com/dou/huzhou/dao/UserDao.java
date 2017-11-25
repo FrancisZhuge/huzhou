@@ -3,6 +3,7 @@ package com.dou.huzhou.dao;
 import com.dou.huzhou.domain.UserInfo;
 import org.apache.ibatis.annotations.*;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -56,5 +57,12 @@ public interface UserDao {
      */
     @Select({" select ", SELECT_FIELDS ," from ", TABLE_USER ," where id = #{id} "})
     UserInfo getById(@Param("id") Long id);
+
+    /**
+     * 查找所有用户
+     * @return
+     */
+    @Select({" select ", SELECT_FIELDS ," from ", TABLE_USER ," "})
+    List<UserInfo> getAll();
 
 }

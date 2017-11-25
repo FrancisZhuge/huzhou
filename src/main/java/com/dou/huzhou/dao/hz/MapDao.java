@@ -19,7 +19,8 @@ public interface MapDao {
     String TABLE_AREA_INFO = "area_info";
     String TABLE_BUILDING_INFO = "building_info";
     String TABLE_COMPANY_INFO = "company_info";
+    String TABLE_BUILDING_COMPANY = "building_company";
 
-    @Select({"select b.building_name, c.company_name, c.id as companyId from", TABLE_AREA_INFO ," a, ", TABLE_BUILDING_INFO ," b, ", TABLE_COMPANY_INFO ," c where a.id=#{id} and b.area_id = a.id and c.building_id = b.id"})
+    @Select({"select b.building_name, c.company_name, c.id as companyId from", TABLE_AREA_INFO ," a, ", TABLE_BUILDING_INFO ," b, ", TABLE_COMPANY_INFO ," c, ", TABLE_BUILDING_COMPANY ," bc where a.id=#{id} and b.area_id = a.id and c.area_id = a.id and bc.building_id = b.id and bc.company_id = c.id"})
     List<MapVo> getMapInfoByArea(@Param("id") Long id);
 }

@@ -26,7 +26,6 @@ public class AreaServiceImpl implements AreaService{
 
     @Override
     public String getAreaNo(Long id) {
-        String returnValue = null;
         String areaNo = null;
         try {
             areaNo = areaDao.getAreaNo(id);

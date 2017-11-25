@@ -16,7 +16,7 @@ public interface PowerDao {
     String TABLE_POWER_INFO = "power_info";
     String TABLE_POWER_METER_RECORD = "power_meter_record";
     /**
-     * 返回吗，某个公司所有电表的主键
+     * 返回指定公司所有电表的主键
      * @param companyId
      * @return
      */
@@ -38,7 +38,8 @@ public interface PowerDao {
      * @return
      */
     @Select({" SELECT epp FROM ", TABLE_POWER_METER_RECORD ," " +
-            "WHERE YEAR(read_time)=(SELECT YEAR(read_time) FROM ", TABLE_POWER_METER_RECORD ," ORDER BY YEAR(read_time)DESC ,MONTH(read_time) DESC LIMIT 0,1)\n" +
+            "WHERE power_info_id = #{id} " +
+            "AND YEAR(read_time)=(SELECT YEAR(read_time) FROM ", TABLE_POWER_METER_RECORD ," ORDER BY YEAR(read_time)DESC ,MONTH(read_time) DESC LIMIT 0,1)\n" +
             "AND MONTH(read_time)=(SELECT MONTH(read_time)-1 FROM ", TABLE_POWER_METER_RECORD ," ORDER BY YEAR(read_time)DESC ,MONTH(read_time) DESC LIMIT 0,1)\n" +
             "ORDER BY read_time DESC LIMIT 0,1 "})
     Double getLastMouthValue(@Param("id") Long id);

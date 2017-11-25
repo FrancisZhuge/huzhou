@@ -62,7 +62,8 @@ public class MapVo {
     @Override
     public String toString() {
         return "MapVo{" +
-                "companyName='" + companyName + '\'' +
+                "companyId=" + companyId +
+                ", companyName='" + companyName + '\'' +
                 ", powerValue=" + powerValue +
                 ", waterValue=" + waterValue +
                 ", energyState=" + energyState +

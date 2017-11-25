@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -73,4 +74,14 @@ public class UserServiceImpl implements UserService{
         return userInfo;
     }
 
+    @Override
+    public List<UserInfo> getAll() {
+        List<UserInfo> userInfos = null;
+        try {
+            userInfos = userDao.getAll();
+        } catch (Exception e) {
+            LOGGER.error("getAll failed, ",e);
+        }
+        return userInfos;
+    }
 }

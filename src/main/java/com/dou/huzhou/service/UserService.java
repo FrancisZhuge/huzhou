@@ -2,6 +2,7 @@ package com.dou.huzhou.service;
 
 import com.dou.huzhou.domain.UserInfo;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -40,4 +41,9 @@ public interface UserService {
      */
     UserInfo getById(Long id);
 
+    /**
+     * 查找所有用户
+     * @return
+     */
+    List<UserInfo> getAll();
 }

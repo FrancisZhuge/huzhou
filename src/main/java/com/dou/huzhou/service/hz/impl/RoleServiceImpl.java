@@ -1,8 +1,9 @@
 package com.dou.huzhou.service.hz.impl;
 
+import com.dou.huzhou.dao.hz.RoleDao;
+import com.dou.huzhou.domain.Role;
 import com.dou.huzhou.domain.UserInfo;
 import com.dou.huzhou.service.hz.AreaService;
-import com.dou.huzhou.service.hz.BuildingService;
 import com.dou.huzhou.service.hz.CompanyService;
 import com.dou.huzhou.service.hz.RoleService;
 import org.slf4j.Logger;
@@ -27,7 +28,7 @@ public class RoleServiceImpl implements RoleService{
     private AreaService areaService;
 
     @Autowired
-    private BuildingService buildingService;
+    private RoleDao roleDao;
 
     @Autowired
     private CompanyService companyService;
@@ -37,24 +38,38 @@ public class RoleServiceImpl implements RoleService{
         if(user.getAreaId()==null){
             LOGGER.debug("spellAdminRole role = admin");
             return "admin";
-        }else if (user.getBuildingId() == null){
+        }else if (user.getCompanyId() == null){
             String areaNo = areaService.getAreaNo(user.getAreaId());
             String returnValue = areaNo+".admin";
             LOGGER.debug("spellAdminRole role = {}",returnValue);
             return returnValue;
-        }else if (user.getCompanyId() == null){
-            String areaNo = areaService.getAreaNo(user.getAreaId());
-            String buildingNo = buildingService.getBuildingNo(user.getBuildingId());
-            String returnValue = areaNo+"."+buildingNo+".admin";
-            LOGGER.debug("spellAdminRole role = {}",returnValue);
-            return returnValue;
         }else{
             String areaNo = areaService.getAreaNo(user.getAreaId());
-            String buildingNo = buildingService.getBuildingNo(user.getBuildingId());
             String companyNo = companyService.getCompanyNo(user.getCompanyId());
-            String returnValue = areaNo+"."+buildingNo+"."+companyNo + ".admin";
+            String returnValue = areaNo+"."+companyNo + ".admin";
             LOGGER.debug("spellAdminRole role = {}",returnValue);
             return returnValue;
         }
+    }
+
+    @Override
+    public Role saveRole(Role role) {
+        try {
+            roleDao.saveRole(role);
+        } catch (Exception e) {
+            LOGGER.error("saveRole failed, ",e);
+        }
+        return role;
+    }
+
+    @Override
+    public Role getByRole(String role) {
+        Role returnValue = null;
+        try {
+            returnValue = roleDao.getByRole(role);
+        } catch (Exception e) {
+            LOGGER.error("getByRole failed, ",e);
+        }
+        return returnValue;
     }
 }

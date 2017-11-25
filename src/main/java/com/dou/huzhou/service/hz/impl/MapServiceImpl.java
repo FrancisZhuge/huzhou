@@ -61,15 +61,9 @@ public class MapServiceImpl implements MapService{
                 //取出所有值
                 //todo
             }
-        }else if(userInfo.getCompanyId() == null){
-            if(user.hasRole(roleService.spellAdminRole(userInfo))){
-                //拥有{area}.{building}.admin权限
-                //取出该楼的所有值
-                //todo
-            }
         }else{
             if(user.hasRole(roleService.spellAdminRole(userInfo))){
-                //拥有{area}.{building}.{company}.admin权限
+                //拥有{area}.{company}.admin权限
                 //取出该公司的所有值
                 //todo
             }else{
@@ -82,34 +76,74 @@ public class MapServiceImpl implements MapService{
 
     @Override
     public List<MapVo> getMapInfoByArea(Long areaId) {
-        JSONArray returnJson = new JSONArray();
         List<MapVo> mapVos = null;
         try {
             mapVos = mapDao.getMapInfoByArea(areaId);
         } catch (Exception e) {
-            LOGGER.error("getMapInfoByArea dao failed. ");
+            LOGGER.error("getMapInfoByArea dao failed");
         }
+        //设置电表
         for(MapVo mapVo:mapVos){
-//            //设置电表值
-//            Long[] powerIds = powerService.getPowerIds(mapVo.getCompanyId());
-//            if()
-//            Double lastValue = 0D;
-//            for(int i=0;i<)
-//            if(lastValue == null){
-//                mapVo.setPowerValue(0D);
-//            }else {
-//                Double lastMonthValue = powerService.getLastMonthValue(powerIds[0]);
-//                if(lastMonthValue == null){
-//                    mapVo.setPowerValue(lastValue);
-//                }else {
-//                    mapVo.setPowerValue(lastValue-lastMonthValue);
-//                }
-//            }
-//            //设置水表值
-//            Long[] waterIds = waterService.getWaterIds(mapVo.getCompanyId());
-//            waterService.getLastValue(waterIds[0]);
+            Long[] powerIds = powerService.getPowerIds(mapVo.getCompanyId());
+            if(powerIds.length==0){
+                mapVo.setPowerValue(0D);
+                continue;
+            }
+            Double powerValue = 0D;
+            for(int i=0;i<powerIds.length;i++){
+                //获取最新读数
+                Double lastValue = powerService.getLastValue(powerIds[i]);
+                if(lastValue == null){
+                    powerValue += 0D;
+                }else{
+                    powerValue += lastValue;
+                }
 
+                if(powerValue == 0D){
+                    mapVo.setPowerValue(0D);
+                }else {
+                    Double powerMonthValue = 0D;
+                    Double lastMonthValue = powerService.getLastMonthValue(powerIds[i]);
+                    if(lastMonthValue == null){
+                        powerMonthValue += 0D;
+                    }else {
+                        powerMonthValue += lastMonthValue;
+                    }
+                    mapVo.setPowerValue(powerValue - powerMonthValue);
+                }
+            }
         }
-        return null;
+        //设置水表
+        for(MapVo mapVo:mapVos){
+            Long[] waterIds = waterService.getWaterIds(mapVo.getCompanyId());
+            if(waterIds.length==0){
+                mapVo.setWaterValue(0D);
+                continue;
+            }
+            Double waterValue = 0D;
+            for(int i=0;i<waterIds.length;i++){
+                //获取最新读数
+                Double lastValue = waterService.getLastValue(waterIds[i]);
+                if(lastValue == null){
+                    waterValue += 0D;
+                }else{
+                    waterValue += lastValue;
+                }
+
+                if(waterValue == 0D){
+                    mapVo.setWaterValue(0D);
+                }else {
+                    Double waterMonthValue = 0D;
+                    Double lastMonthValue = waterService.getLastMonthValue(waterIds[i]);
+                    if(lastMonthValue == null){
+                        waterMonthValue += 0D;
+                    }else {
+                        waterMonthValue += lastMonthValue;
+                    }
+                    mapVo.setPowerValue(waterValue - waterMonthValue);
+                }
+            }
+        }
+        return mapVos;
     }
 }
