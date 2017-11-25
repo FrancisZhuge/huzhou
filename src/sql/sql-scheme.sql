@@ -131,11 +131,6 @@ create table area_info(
 -- Table structure for building_info
 -- 大楼信息表
 -- ---------------------------------
--- attention 大楼编号   building_no字段
--- 人为保证唯一，如果已经有编号，直接使用编号，如 B1
--- 如果没有编号，则使用英文名称，如 hz
--- 如果没有英文名称，则使用中文拼音简写形式，如 hz
--- ----------------------------------------------
 DROP TABLE IF EXISTS building_info;
 create table building_info(
   id BIGINT AUTO_INCREMENT COMMENT '设置主键自增',
@@ -150,21 +145,29 @@ create table building_info(
 -- Table structure for company_info
 -- 公司信息表
 -- ---------------------------------
--- attention 公司编号   company_no
--- 人为保证唯一，如果已经有编号，直接使用编号，如 B1
--- 如果没有编号，则使用英文名称，如 hz
--- 如果没有英文名称，则使用中文拼音简写形式，如 hz
--- ----------------------------------------------
 DROP TABLE IF EXISTS company_info;
 CREATE TABLE company_info(
   id BIGINT AUTO_INCREMENT COMMENT '设置主键自增',
   company_no VARCHAR(255) NULL  COMMENT '公司编号',
   company_name VARCHAR(255) NULL COMMENT '公司名称',
   address varchar(255) null COMMENT '地址',
-  building_id BIGINT COMMENT '所在大楼id',
+  area_id BIGINT COMMENT '所在园区id',
   CONSTRAINT pk_company_info PRIMARY KEY (id)
 )CHARSET=utf8 ENGINE=InnoDB;
+
+-- ------------------------------------
+-- Table structure for building_company
+-- 大楼和公司中间表
+-- 多对多关系
 -- -----------------------------------
+DROP TABLE IF EXISTS building_company;
+CREATE TABLE building_company(
+  building_id BIGINT NULL COMMENT '大楼编号',
+  company_id BIGINT NULL COMMENT '公司编号'
+)CHARSET=utf8 ENGINE=InnoDB;
+
+
+
 -- Table structure for user_meter_info
 -- 用户-水电表
 -- -----------------------------------

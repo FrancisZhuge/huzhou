@@ -1,10 +1,15 @@
 package com.dou.huzhou.service.hz.impl;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.dou.huzhou.dao.hz.MapDao;
 import com.dou.huzhou.domain.UserInfo;
 import com.dou.huzhou.domain.hz.MapVo;
 import com.dou.huzhou.service.UserService;
 import com.dou.huzhou.service.hz.MapService;
+import com.dou.huzhou.service.hz.PowerService;
 import com.dou.huzhou.service.hz.RoleService;
+import com.dou.huzhou.service.hz.WaterService;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,10 +32,19 @@ public class MapServiceImpl implements MapService{
     private final static Logger LOGGER = LoggerFactory.getLogger(MapServiceImpl.class);
 
     @Autowired
+    private MapDao mapDao;
+
+    @Autowired
     private UserService userService;
 
     @Autowired
     private RoleService roleService;
+
+    @Autowired
+    private PowerService powerService;
+
+    @Autowired
+    private WaterService waterService;
 
     @Override
     public List<MapVo> getMapInfo(Subject user) {
@@ -68,8 +82,34 @@ public class MapServiceImpl implements MapService{
 
     @Override
     public List<MapVo> getMapInfoByArea(Long areaId) {
-        List<MapVo> returnValue = null;
-        //todo
+        JSONArray returnJson = new JSONArray();
+        List<MapVo> mapVos = null;
+        try {
+            mapVos = mapDao.getMapInfoByArea(areaId);
+        } catch (Exception e) {
+            LOGGER.error("getMapInfoByArea dao failed. ");
+        }
+        for(MapVo mapVo:mapVos){
+            //设置电表值
+            Long[] powerIds = powerService.getPowerIds(mapVo.getCompanyId());
+            if()
+            Double lastValue = 0D;
+            for(int i=0;i<)
+            if(lastValue == null){
+                mapVo.setPowerValue(0D);
+            }else {
+                Double lastMonthValue = powerService.getLastMonthValue(powerIds[0]);
+                if(lastMonthValue == null){
+                    mapVo.setPowerValue(lastValue);
+                }else {
+                    mapVo.setPowerValue(lastValue-lastMonthValue);
+                }
+            }
+            //设置水表值
+            Long[] waterIds = waterService.getWaterIds(mapVo.getCompanyId());
+            waterService.getLastValue(waterIds[0]);
+
+        }
         return null;
     }
 }

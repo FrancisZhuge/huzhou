@@ -1,6 +1,8 @@
 package com.dou.huzhou;
 
+import com.dou.huzhou.dao.hz.MapDao;
 import com.dou.huzhou.domain.UserInfo;
+import com.dou.huzhou.domain.hz.MapVo;
 import com.dou.huzhou.service.UserService;
 import com.dou.huzhou.service.hz.AreaService;
 import com.dou.huzhou.service.hz.BuildingService;
@@ -12,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.List;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class HuzhouApplicationTests {
@@ -21,11 +25,12 @@ public class HuzhouApplicationTests {
 
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private MapDao mapDao;
 	@Test
 	public void contextLoads() {
-		UserInfo userInfo = userService.getById(4L);
-		System.out.println(userInfo);
-		String role = roleService.spellAdminRole(userInfo);
-		System.out.println(role);
+		List<MapVo> mapVos = mapDao.getMapInfoByArea(1L);
+		System.out.println(mapVos);
 	}
 }

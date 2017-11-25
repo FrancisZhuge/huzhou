@@ -29,4 +29,5 @@ public interface MapService {
     List<MapVo> getMapInfoByArea(Long areaId);
 
 
+
 }
