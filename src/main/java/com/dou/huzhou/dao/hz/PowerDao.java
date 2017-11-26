@@ -1,8 +1,11 @@
 package com.dou.huzhou.dao.hz;
 
+import com.dou.huzhou.domain.hz.PowerDo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
  * @Author: Francis Zhuge
@@ -43,6 +46,16 @@ public interface PowerDao {
             "AND MONTH(read_time)=(SELECT MONTH(read_time)-1 FROM ", TABLE_POWER_METER_RECORD ," ORDER BY YEAR(read_time)DESC ,MONTH(read_time) DESC LIMIT 0,1)\n" +
             "ORDER BY read_time DESC LIMIT 0,1 "})
     Double getLastMouthValue(@Param("id") Long id);
+
+    /**
+     * 每小时power读数
+     * @param powerId
+     * @return
+     */
+    @Select({" SELECT DATE_FORMAT(pmr.read_time,'%Y%m%d%H') as time, min(pmr.epp) as power_value\n" +
+            "FROM", TABLE_POWER_INFO ," pi,", TABLE_POWER_METER_RECORD ," pmr\n" +
+            "WHERE pi.id = #{powerId} AND pi.id=pmr.power_info_id AND DAY(pmr.read_time)=DAY(NOW()) GROUP BY DATE_FORMAT(pmr.read_time,'%Y%m%d%H'); "})
+    List<PowerDo> getPowerPerHour(@Param("powerId") Long powerId);
 
 
 }

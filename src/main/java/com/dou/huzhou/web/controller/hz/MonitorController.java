@@ -9,7 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
@@ -46,5 +48,21 @@ public class MonitorController {
         }
         LOGGER.debug("getMapInfo success. ");
         return ResponseUtil.responseOkWithData(mapInfo);
+    }
+
+    /**
+     * 返回今天water和power每隔一小时的用量
+     * @param id
+     * @return
+     */
+    @RequestMapping("/powerAndWater")
+    @ResponseBody
+    public String getPowerAndWaterPerHour(@RequestParam(value = "id", required = false) Long id){
+        //参数错误
+        if (id == null||id ==0L){
+            return ResponseUtil.responseIllegalArgus();
+        }
+        //todo:获取water和power的读数
+        return null;
     }
 }

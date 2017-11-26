@@ -4,6 +4,7 @@ import com.dou.huzhou.dao.hz.MonitorDao;
 import com.dou.huzhou.domain.UserInfo;
 import com.dou.huzhou.domain.hz.BuildingCompanyVo;
 import com.dou.huzhou.domain.hz.MapVo;
+import com.dou.huzhou.domain.hz.PowerAndWaterVo;
 import com.dou.huzhou.service.UserService;
 import com.dou.huzhou.service.hz.MonitorService;
 import com.dou.huzhou.service.hz.RoleService;
@@ -87,5 +88,10 @@ public class MonitorServiceImpl implements MonitorService{
             LOGGER.error("getInfoByCompany dao failed");
         }
         return buildingCompanyVos;
+    }
+
+    @Override
+    public List<PowerAndWaterVo> getPowerAndWaterValue(Long companyId) {
+        return null;
     }
 }

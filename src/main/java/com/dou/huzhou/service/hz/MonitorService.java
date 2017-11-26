@@ -2,6 +2,7 @@ package com.dou.huzhou.service.hz;
 
 import com.dou.huzhou.domain.hz.BuildingCompanyVo;
 import com.dou.huzhou.domain.hz.MapVo;
+import com.dou.huzhou.domain.hz.PowerAndWaterVo;
 import org.apache.shiro.subject.Subject;
 
 import java.util.List;
@@ -36,4 +37,11 @@ public interface MonitorService {
      * @return
      */
     List<BuildingCompanyVo> getInfoByCompany(Long areaId, Long companyId);
+
+    /**
+     * 根据company_id 来获取公司当天的用电情况（每小时，以整点右边最近的时间为整点时间）
+     * @param companyId
+     * @return
+     */
+    List<PowerAndWaterVo> getPowerAndWaterValue(Long companyId);
 }

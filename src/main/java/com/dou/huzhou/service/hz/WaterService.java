@@ -1,5 +1,9 @@
 package com.dou.huzhou.service.hz;
 
+import com.dou.huzhou.domain.hz.WaterDo;
+
+import java.util.List;
+
 /**
  * @Author: Francis Zhuge
  * @Description:
@@ -29,4 +33,11 @@ public interface WaterService {
      * @return
      */
     Double getLastMonthValue(Long id);
+
+    /**
+     * 根据水表的主键来获取当天的每小时数值
+     * @param waterId
+     * @return
+     */
+    List<WaterDo> getWaterPerHour(Long waterId);
 }

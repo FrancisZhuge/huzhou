@@ -1,12 +1,15 @@
 package com.dou.huzhou.service.hz.impl;
 
 import com.dou.huzhou.dao.hz.PowerDao;
+import com.dou.huzhou.domain.hz.PowerDo;
 import com.dou.huzhou.service.hz.PowerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * @Author: Francis Zhuge
@@ -55,5 +58,16 @@ public class PowerServiceImpl implements PowerService{
             LOGGER.error("getLastMonthValue failed.");
         }
         return value;
+    }
+
+    @Override
+    public List<PowerDo> getPowerPerHour(Long powerId) {
+        List<PowerDo> powerDos = null;
+        try {
+            powerDos = powerDao.getPowerPerHour(powerId);
+        } catch (Exception e) {
+            LOGGER.error("getPowerPerHour failed.");
+        }
+        return powerDos;
     }
 }

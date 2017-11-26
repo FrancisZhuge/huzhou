@@ -1,6 +1,10 @@
 package com.dou.huzhou.service.hz;
 
 
+import com.dou.huzhou.domain.hz.PowerDo;
+
+import java.util.List;
+
 /**
  * @Author: Francis Zhuge
  * @Description:
@@ -30,4 +34,11 @@ public interface PowerService {
      * @return
      */
     Double getLastMonthValue(Long id);
+
+    /**
+     * 根据电表的主键来获取当天的每小时数值
+     * @param powerId
+     * @return
+     */
+    List<PowerDo> getPowerPerHour(Long powerId);
 }

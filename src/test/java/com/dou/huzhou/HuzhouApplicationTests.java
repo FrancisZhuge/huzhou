@@ -2,12 +2,10 @@ package com.dou.huzhou;
 
 import com.dou.huzhou.dao.hz.MapDao;
 import com.dou.huzhou.dao.hz.MonitorDao;
+import com.dou.huzhou.dao.hz.WaterDao;
 import com.dou.huzhou.domain.Role;
 import com.dou.huzhou.domain.UserInfo;
-import com.dou.huzhou.domain.hz.Area;
-import com.dou.huzhou.domain.hz.BuildingCompanyVo;
-import com.dou.huzhou.domain.hz.Company;
-import com.dou.huzhou.domain.hz.MapVo;
+import com.dou.huzhou.domain.hz.*;
 import com.dou.huzhou.service.UserService;
 import com.dou.huzhou.service.hz.*;
 import org.junit.Test;
@@ -50,9 +48,13 @@ public class HuzhouApplicationTests {
 	@Autowired
 	private MonitorService monitorService;
 
+	@Autowired
+	private WaterDao waterDao;
 	@Test
 	public void contextLoads() {
-		List<BuildingCompanyVo> buildingCompanyVos = monitorService.getInfoByArea(1L);
-		System.out.println(buildingCompanyVos);
+		List<WaterDo> waterDos = waterDao.getWaterPerHour(38L);
+		for(WaterDo waterDo:waterDos){
+			System.out.println(waterDo);
+		}
 	}
 }
