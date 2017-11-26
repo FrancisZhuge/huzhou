@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @Email: franciszhuge@163.com
  */
 @Service
-@Transactional(rollbackFor = Exception.class)
+@Transactional
 public class WaterServiceImpl implements WaterService{
     private final static Logger LOGGER = LoggerFactory.getLogger(WaterServiceImpl.class);
 

@@ -1,8 +1,12 @@
 package com.dou.huzhou;
 
 import com.dou.huzhou.dao.hz.MapDao;
+import com.dou.huzhou.dao.hz.MonitorDao;
 import com.dou.huzhou.domain.Role;
 import com.dou.huzhou.domain.UserInfo;
+import com.dou.huzhou.domain.hz.Area;
+import com.dou.huzhou.domain.hz.BuildingCompanyVo;
+import com.dou.huzhou.domain.hz.Company;
 import com.dou.huzhou.domain.hz.MapVo;
 import com.dou.huzhou.service.UserService;
 import com.dou.huzhou.service.hz.*;
@@ -42,8 +46,13 @@ public class HuzhouApplicationTests {
 
 	@Autowired
 	private PowerService powerService;
+
+	@Autowired
+	private MonitorService monitorService;
+
 	@Test
 	public void contextLoads() {
-
+		List<BuildingCompanyVo> buildingCompanyVos = monitorService.getInfoByArea(1L);
+		System.out.println(buildingCompanyVos);
 	}
 }

@@ -28,6 +28,13 @@ public interface MapService {
      */
     List<MapVo> getMapInfoByArea(Long areaId);
 
+    /**
+     * 根据areadId和companyId来获取指定公司的Map信息
+     * @param areaId
+     * @param companyId
+     * @return
+     */
+    List<MapVo> getMapInfoByCompany(Long areaId, Long companyId);
 
 
 }

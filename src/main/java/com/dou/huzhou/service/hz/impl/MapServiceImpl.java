@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,7 +28,7 @@ import java.util.List;
  * @Email: franciszhuge@163.com
  */
 @Service
-@Transactional(rollbackFor = Exception.class)
+@Transactional
 public class MapServiceImpl implements MapService{
     private final static Logger LOGGER = LoggerFactory.getLogger(MapServiceImpl.class);
 
@@ -49,29 +50,31 @@ public class MapServiceImpl implements MapService{
     @Override
     public List<MapVo> getMapInfo(Subject user) {
         UserInfo userInfo = userService.getByUsername((String) user.getPrincipal());
+        List<MapVo> mapVos = null;
         if(userInfo.getAreaId() == null){
             if(user.hasRole(roleService.spellAdminRole(userInfo))){
                 //拥有admin权限
                 //取出所有值
-                //todo:
+                //todo：这里直接使用了1L，等待改进
+                mapVos = getMapInfoByArea(1L);
             }
-        }else if(userInfo.getBuildingId() == null){
+        }else if(userInfo.getCompanyId() == null){
             if(user.hasRole(roleService.spellAdminRole(userInfo))){
                 //拥有{area}.admin权限
                 //取出所有值
-                //todo
+                mapVos = getMapInfoByArea(userInfo.getAreaId());
             }
         }else{
             if(user.hasRole(roleService.spellAdminRole(userInfo))){
                 //拥有{area}.{company}.admin权限
                 //取出该公司的所有值
-                //todo
+                mapVos = getMapInfoByCompany(userInfo.getAreaId(), userInfo.getCompanyId());
             }else{
                 //没有权限
                 //返回空
             }
         }
-        return null;
+        return mapVos;
     }
 
     @Override
@@ -82,6 +85,28 @@ public class MapServiceImpl implements MapService{
         } catch (Exception e) {
             LOGGER.error("getMapInfoByArea dao failed");
         }
+        setValue(mapVos);
+        return mapVos;
+    }
+
+    @Override
+    public List<MapVo> getMapInfoByCompany(Long areaId, Long companyId) {
+        List<MapVo> mapVos = null;
+        try {
+            mapVos = mapDao.getMapInfoByCompany(areaId,companyId);
+        } catch (Exception e) {
+            LOGGER.error("getMapInfoByCompany dao failed");
+        }
+        setValue(mapVos);
+        return mapVos;
+    }
+
+
+    /**
+     * 设置电表和水表的值
+     * @param mapVos
+     */
+    private void setValue(List<MapVo> mapVos){
         //设置电表
         for(MapVo mapVo:mapVos){
             Long[] powerIds = powerService.getPowerIds(mapVo.getCompanyId());
@@ -144,6 +169,5 @@ public class MapServiceImpl implements MapService{
                 }
             }
         }
-        return mapVos;
     }
 }

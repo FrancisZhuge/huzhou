@@ -1,5 +1,6 @@
 package com.dou.huzhou.service.hz;
 
+import com.dou.huzhou.domain.hz.Area;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -16,4 +17,11 @@ public interface AreaService {
      * @return
      */
     String getAreaNo(Long id);
+
+    /**
+     * 根据id查找Area对象
+     * @param id
+     * @return
+     */
+    Area getById(Long id);
 }

@@ -2,7 +2,11 @@ package com.dou.huzhou.script;
 
 import com.dou.huzhou.domain.Role;
 import com.dou.huzhou.domain.UserInfo;
+import com.dou.huzhou.domain.hz.Area;
+import com.dou.huzhou.domain.hz.Company;
 import com.dou.huzhou.service.UserService;
+import com.dou.huzhou.service.hz.AreaService;
+import com.dou.huzhou.service.hz.CompanyService;
 import com.dou.huzhou.service.hz.RoleService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,6 +32,12 @@ public class RoleScript {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private AreaService areaService;
+
+    @Autowired
+    private CompanyService companyService;
+
     @Test
     public void createRole(){
         List<UserInfo> userInfos = userService.getAll();
@@ -44,7 +54,29 @@ public class RoleScript {
                     continue;
                 }
             }else if (userInfo.getCompanyId() == null){
-                
+                Area area = areaService.getById(userInfo.getAreaId());
+                String rolename = area.getAreaNo()+".admin";
+                Role role = roleService.getByRole(rolename);
+                if(role == null){
+                    role = new Role();
+                    role.setRole(rolename);
+                    role.setDescription(area.getAreaName()+"管理员");
+                    role.setAvailable(true);
+                    roleService.saveRole(role);
+                }
+            }else {
+                Area area = areaService.getById(userInfo.getAreaId());
+                Company company = companyService.getById(userInfo.getCompanyId());
+                String rolename = area.getAreaNo()+"."+company.getCompanyNo()+".admin";
+                String description = area.getAreaName()+company.getCompanyName()+"管理员";
+                Role role = roleService.getByRole(rolename);
+                if(role == null){
+                    role = new Role();
+                    role.setRole(rolename);
+                    role.setDescription(description);
+                    role.setAvailable(true);
+                    roleService.saveRole(role);
+                }
             }
         }
     }

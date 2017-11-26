@@ -1,8 +1,7 @@
 package com.dou.huzhou.web.controller.hz;
 
-import com.dou.huzhou.domain.HostHolder;
-import com.dou.huzhou.domain.hz.MapVo;
-import com.dou.huzhou.service.hz.MapService;
+import com.dou.huzhou.domain.hz.BuildingCompanyVo;
+import com.dou.huzhou.service.hz.MonitorService;
 import com.dou.huzhou.web.response.ResponseUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -11,37 +10,36 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
 /**
  * @Author: Francis Zhuge
- * @Description:
- * @Date: Created in 2017/11/24, 13:52
+ * @Description: 实时监控
+ * @Date: Created in 2017/11/26, 14:59
  * @Modified By:
  * @Email: franciszhuge@163.com
  */
 @Controller
-@RequestMapping("/hz/map")
-public class MapController {
+@RequestMapping("/hz/monitor")
+public class MonitorController {
     private final static Logger LOGGER = LoggerFactory.getLogger(MapController.class);
 
     @Autowired
-    private MapService mapService;
-
-    @Autowired
-    private HostHolder hostHolder;
+    private MonitorService monitorService;
 
     /**
-     * 获取湖州mapInfo
+     * 返回当前用户有权限的公司所在大楼和公司的名称
      * @return
      */
-    @RequestMapping("/mapInfo")
-    public String getMapInfo(){
+    @RequestMapping("/info")
+    @ResponseBody
+    public String getInfo(){
         Subject curUser = SecurityUtils.getSubject();
-        List<MapVo> mapInfo = null;
+        List<BuildingCompanyVo> mapInfo = null;
         try {
-            mapInfo = mapService.getMapInfo(curUser);
+            mapInfo = monitorService.getInfo(curUser);
         } catch (Exception e) {
             LOGGER.error("getMapInfo failed. ");
             return ResponseUtil.responmseServerError();

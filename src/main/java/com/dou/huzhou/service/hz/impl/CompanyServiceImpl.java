@@ -1,6 +1,7 @@
 package com.dou.huzhou.service.hz.impl;
 
 import com.dou.huzhou.dao.hz.CompanyDao;
+import com.dou.huzhou.domain.hz.Company;
 import com.dou.huzhou.service.hz.CompanyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @Email: franciszhuge@163.com
  */
 @Service
-@Transactional(rollbackFor = Exception.class)
+@Transactional
 public class CompanyServiceImpl implements CompanyService{
     private final static Logger LOGGER = LoggerFactory.getLogger(BuildingServiceImpl.class);
 
@@ -33,5 +34,16 @@ public class CompanyServiceImpl implements CompanyService{
             LOGGER.error("getBuildingNo failed. ");
         }
         return areaNo;
+    }
+
+    @Override
+    public Company getById(Long id) {
+        Company returnValue = null;
+        try {
+            returnValue = CompanyDao.getById(id);
+        } catch (Exception e) {
+            LOGGER.error("getById failed. ");
+        }
+        return returnValue;
     }
 }

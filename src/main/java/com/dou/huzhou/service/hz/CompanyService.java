@@ -1,5 +1,8 @@
 package com.dou.huzhou.service.hz;
 
+import com.dou.huzhou.domain.hz.Area;
+import com.dou.huzhou.domain.hz.Company;
+
 /**
  * @Author: Francis Zhuge
  * @Description:
@@ -15,4 +18,11 @@ public interface CompanyService {
      * @return
      */
     String getCompanyNo(Long id);
+
+    /**
+     * 根据主键查找公司
+     * @param id
+     * @return
+     */
+    Company getById(Long id);
 }
