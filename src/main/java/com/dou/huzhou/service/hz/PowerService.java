@@ -41,4 +41,11 @@ public interface PowerService {
      * @return
      */
     List<PowerDo> getPowerPerHour(Long powerId);
+
+    /**
+     * 当月每天的电表读数
+     * @param powerId
+     * @return
+     */
+    List<PowerDo> getPowerPerDay(Long powerId);
 }

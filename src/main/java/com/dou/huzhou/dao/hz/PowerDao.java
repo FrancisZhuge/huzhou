@@ -40,11 +40,7 @@ public interface PowerDao {
      * @param id
      * @return
      */
-    @Select({" SELECT epp FROM ", TABLE_POWER_METER_RECORD ," " +
-            "WHERE power_info_id = #{id} " +
-            "AND YEAR(read_time)=(SELECT YEAR(read_time) FROM ", TABLE_POWER_METER_RECORD ," ORDER BY YEAR(read_time)DESC ,MONTH(read_time) DESC LIMIT 0,1)\n" +
-            "AND MONTH(read_time)=(SELECT MONTH(read_time)-1 FROM ", TABLE_POWER_METER_RECORD ," ORDER BY YEAR(read_time)DESC ,MONTH(read_time) DESC LIMIT 0,1)\n" +
-            "ORDER BY read_time DESC LIMIT 0,1 "})
+    @Select({" SELECT pmr.epp FROM ", TABLE_POWER_INFO ," pi, ", TABLE_POWER_METER_RECORD ," pmr WHERE pi.id = #{id} AND pi.id=pmr.power_info_id AND MONTH(pmr.read_time)=MONTH(NOW())-1 ORDER BY pmr.read_time DESC LIMIT 0,1 "})
     Double getLastMouthValue(@Param("id") Long id);
 
     /**
@@ -57,4 +53,11 @@ public interface PowerDao {
             "WHERE pi.id = #{powerId} AND pi.id=pmr.power_info_id AND DAY(pmr.read_time)=DAY(NOW()) GROUP BY time "})
     List<PowerDo> getPowerPerHour(@Param("powerId") Long powerId);
 
+    /**
+     * 当月每天power读数
+     * @param powerId
+     * @return
+     */
+    @Select({" SELECT Day(pmr.read_time) as time, max(pmr.epp) as power_value FROM ", TABLE_POWER_INFO ," pi, ", TABLE_POWER_METER_RECORD ," pmr WHERE pi.id = #{powerId} AND pi.id=pmr.power_info_id AND MONTH(pmr.read_time)=MONTH(NOW()) GROUP BY time "})
+    List<PowerDo> getPowerPerDay(@Param("powerId") Long powerId);
 }

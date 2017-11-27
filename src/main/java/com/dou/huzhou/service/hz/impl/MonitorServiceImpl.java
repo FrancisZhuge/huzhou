@@ -16,8 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @Author: Francis Zhuge
@@ -100,8 +99,8 @@ public class MonitorServiceImpl implements MonitorService{
 
     @Override
     public List<PowerAndWaterVo> getPowerAndWaterValue(Long companyId) {
-        double[] powerValue = getPowerValue(companyId);
-        double[] waterValue = getWaterValue(companyId);
+        double[] powerValue = getPowerValuePerHour(companyId);
+        double[] waterValue = getWaterValuePerHour(companyId);
         List<PowerAndWaterVo> powerAndWaterVos = new ArrayList<>();
         for(int i=0;i<23;i++){
             PowerAndWaterVo powerAndWaterVo = new PowerAndWaterVo();
@@ -115,15 +114,26 @@ public class MonitorServiceImpl implements MonitorService{
 
     @Override
     public List<PowerAndWaterVo> getPowerAndWaterValuePerDay(Long companyId) {
-        return null;
+        double[] waterValuePerDay = getWaterValuePerDay(companyId);
+        double[] powerValuePerDay = getPowerValuePerDay(companyId);
+        List<PowerAndWaterVo> powerAndWaterVos = new ArrayList<>();
+        int dayNumber = TimeUtil.getDayNumber();
+        for(int i=0;i<dayNumber;i++){
+            PowerAndWaterVo powerAndWaterVo = new PowerAndWaterVo();
+            powerAndWaterVo.setTime(TimeUtil.getTimeByDay(i+1));
+            powerAndWaterVo.setWaterValue(waterValuePerDay[i]);
+            powerAndWaterVo.setPowerValue(powerValuePerDay[i]);
+            powerAndWaterVos.add(powerAndWaterVo);
+        }
+        return powerAndWaterVos;
     }
 
     /**
-     * 获取每天分时的水表数据
+     * 当天每小时用水量
      * @param companyId
      * @return
      */
-    private double[] getWaterValue(Long companyId) {
+    private double[] getWaterValuePerHour(Long companyId) {
         double[] temp = new double[24];
         double[] waterValue = new double[23];
         Long[] waterIds = waterService.getWaterIds(companyId);
@@ -151,11 +161,49 @@ public class MonitorServiceImpl implements MonitorService{
     }
 
     /**
+     * 当月每天的用水量
+     * @param companyId
+     * @return
+     */
+    private double[] getWaterValuePerDay(Long companyId) {
+        double[] temp = new double[32];
+        double[] waterValue = new double[31];
+        Long[] waterIds = waterService.getWaterIds(companyId);
+        for(int i=0;i<waterIds.length;i++){
+            double[] before = new double[32];
+            List<WaterDo> waterDos = waterService.getWaterPerDay(waterIds[i]);
+            Double lastMonthValue = waterService.getLastMonthValue(waterIds[i]);
+            if(lastMonthValue==null){
+                before[0] = 0D;
+            }else {
+                before[0] = lastMonthValue;
+            }
+            //规整
+            for(WaterDo waterDo:waterDos){
+                before[waterDo.getTime()] = waterDo.getWaterValue();
+            }
+            for(int j=1;j<32;j++){
+                if(before[j]==0D&&before[j-1]!=0D){
+                    before[j]=before[j-1];
+                }
+            }
+            for(int j=0;j<32;j++){
+                temp[j] = temp[j]+before[j];
+            }
+        }
+        //相减
+        for(int i=0;i<31;i++){
+            waterValue[i] = temp[i+1]-temp[i];
+        }
+        return waterValue;
+    }
+
+    /**
      * 获取每天分时的电表数据
      * @param companyId
      * @return
      */
-    private double[] getPowerValue(Long companyId) {
+    private double[] getPowerValuePerHour(Long companyId) {
         double[] temp = new double[24];
         double[] powerValue = new double[23];
         Long[] powerIds = powerService.getPowerIds(companyId);
@@ -181,4 +229,43 @@ public class MonitorServiceImpl implements MonitorService{
         }
         return powerValue;
     }
+
+    /**
+     * 当月每天的用水量
+     * @param companyId
+     * @return
+     */
+    private double[] getPowerValuePerDay(Long companyId) {
+        double[] temp = new double[32];
+        double[] powerValue = new double[31];
+        Long[] powerIds = powerService.getPowerIds(companyId);
+        for(int i=0;i<powerIds.length;i++){
+            double[] before = new double[32];
+            List<PowerDo> powerDos = powerService.getPowerPerDay(powerIds[i]);
+            Double lastMonthValue = powerService.getLastMonthValue(powerIds[i]);
+            if(lastMonthValue==null){
+                before[0] = 0D;
+            }else {
+                before[0] = lastMonthValue;
+            }
+            //规整
+            for(PowerDo powerDo:powerDos){
+                before[powerDo.getTime()] = powerDo.getPowerValue();
+            }
+            for(int j=1;j<32;j++){
+                if(before[j]==0D&&before[j-1]!=0D){
+                    before[j]=before[j-1];
+                }
+            }
+            for(int j=0;j<32;j++){
+                temp[j] = temp[j]+before[j];
+            }
+        }
+        //相减
+        for(int i=0;i<31;i++){
+            powerValue[i] = temp[i+1]-temp[i];
+        }
+        return powerValue;
+    }
+
 }

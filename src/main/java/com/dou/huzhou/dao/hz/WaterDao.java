@@ -39,10 +39,7 @@ public interface WaterDao {
      * @param id
      * @return
      */
-    @Select({" SELECT epp FROM ", TABLE_WATER_METER_RECORD ," " +
-            "WHERE YEAR(read_time)=(SELECT YEAR(read_time) FROM ", TABLE_WATER_METER_RECORD ," ORDER BY YEAR(read_time)DESC ,MONTH(read_time) DESC LIMIT 0,1)\n" +
-            "AND MONTH(read_time)=(SELECT MONTH(read_time)-1 FROM ", TABLE_WATER_METER_RECORD ," ORDER BY YEAR(read_time)DESC ,MONTH(read_time) DESC LIMIT 0,1)\n" +
-            "ORDER BY read_time DESC LIMIT 0,1 "})
+    @Select({" SELECT wmr.consumption FROM ", TABLE_WATER_INFO ," wi, ", TABLE_WATER_METER_RECORD ," wmr WHERE wi.id = #{id} AND wi.id=wmr.water_info_id AND MONTH(wmr.read_time)=MONTH(NOW())-1 ORDER BY wmr.read_time DESC LIMIT 0,1 "})
     Double getLastMouthValue(@Param("id") Long id);
 
     /**
@@ -55,6 +52,11 @@ public interface WaterDao {
             "WHERE wi.id = #{waterId} AND wi.id=wmr.water_info_id AND DAY(wmr.read_time)=DAY(NOW()) GROUP BY time "})
     List<WaterDo> getWaterPerHour(@Param("waterId") Long waterId);
 
-    @Select({"  "})
+    /**
+     * 当月每天water读数
+     * @param waterId
+     * @return
+     */
+    @Select({" SELECT Day(wmr.read_time) as time, max(wmr.consumption) as water_value FROM ", TABLE_WATER_INFO ," wi, ", TABLE_WATER_METER_RECORD ," wmr WHERE wi.id = #{waterId} AND wi.id=wmr.water_info_id AND MONTH(wmr.read_time)=MONTH(NOW()) GROUP BY time "})
     List<WaterDo> getWaterPerDay(@Param("waterId") Long waterId);
 }

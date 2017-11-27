@@ -58,4 +58,30 @@ public class TimeUtil {
         }
         return format;
     }
+
+    /**
+     * 获取当月有多少天
+     * @return
+     */
+    public static int getDayNumber(){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        int maximum = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+        return maximum;
+    }
+
+    public static String getTimeByDay(int i){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.DAY_OF_MONTH,i);
+        Date date = new Date(cal.getTimeInMillis());
+        String format = null;
+        try {
+            format = sdf.format(date);
+        } catch (Exception e) {
+            LOGGER.error("getTimeByDay failed. ");
+        }
+        return format;
+    }
+
 }

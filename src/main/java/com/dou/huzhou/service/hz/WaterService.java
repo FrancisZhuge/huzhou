@@ -40,4 +40,12 @@ public interface WaterService {
      * @return
      */
     List<WaterDo> getWaterPerHour(Long waterId);
+
+    /**
+     * 当月每天的水表读数
+     * @param waterId
+     * @return
+     */
+    List<WaterDo> getWaterPerDay(Long waterId);
+
 }

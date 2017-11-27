@@ -68,4 +68,16 @@ public class WaterServiceImpl implements WaterService{
         }
         return waterDos;
     }
+
+    @Override
+    public List<WaterDo> getWaterPerDay(Long waterId) {
+        List<WaterDo> waterDos = null;
+        try {
+            waterDos = waterDao.getWaterPerDay(waterId);
+        } catch (Exception e) {
+            LOGGER.error("getWaterPerDay failed.");
+        }
+        return waterDos;
+    }
+
 }

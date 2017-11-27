@@ -51,4 +51,6 @@ public interface MonitorService {
      * @return
      */
     List<PowerAndWaterVo> getPowerAndWaterValuePerDay(Long companyId);
+
+    
 }

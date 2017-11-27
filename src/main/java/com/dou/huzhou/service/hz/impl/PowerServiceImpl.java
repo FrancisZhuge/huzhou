@@ -70,4 +70,15 @@ public class PowerServiceImpl implements PowerService{
         }
         return powerDos;
     }
+
+    @Override
+    public List<PowerDo> getPowerPerDay(Long powerId) {
+        List<PowerDo> powerDos = null;
+        try {
+            powerDos = powerDao.getPowerPerDay(powerId);
+        } catch (Exception e) {
+            LOGGER.error("getPowerPerDay failed.");
+        }
+        return powerDos;
+    }
 }

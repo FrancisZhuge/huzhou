@@ -75,7 +75,7 @@ public class MonitorController {
 
     /**
      * 公司当月能耗
-     * @param id
+     * @param id  公司id
      * @return
      */
     @RequestMapping("/calendar")
@@ -85,6 +85,40 @@ public class MonitorController {
         if (id == null||id ==0L){
             return ResponseUtil.responseIllegalArgus();
         }
-        return null;
+        List<PowerAndWaterVo> powerAndWaterVos = null;
+        try {
+            powerAndWaterVos = monitorService.getPowerAndWaterValuePerDay(id);
+        } catch (Exception e) {
+            LOGGER.error("calendar failed. ");
+            return ResponseUtil.responmseServerError();
+        }
+        return ResponseUtil.responseOkWithData(powerAndWaterVos);
+    }
+
+    /**
+     * 分时能耗
+     * @param id  公司id
+     * @param time  选定日期，只用传递日即可，比如1号传递1,2号传递2
+     * @return
+     */
+    @RequestMapping("/percentage")
+    @ResponseBody
+    public String percentage(@RequestParam(value = "id", required = false) Long id,
+                             @RequestParam(value = "time",required = false) Integer time){
+        //参数错误
+        if (id == null||id ==0L){
+            return ResponseUtil.responseIllegalArgus();
+        }
+        if (time == null||time<1||time>31){
+            return ResponseUtil.responseIllegalArgus();
+        }
+        List<PowerAndWaterVo> powerAndWaterVos = null;
+        try {
+
+        }catch (Exception e) {
+            LOGGER.error("percentage failed. ");
+            return ResponseUtil.responmseServerError();
+        }
+        return ResponseUtil.responseOkWithData(powerAndWaterVos);
     }
 }
