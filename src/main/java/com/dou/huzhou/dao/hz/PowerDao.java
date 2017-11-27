@@ -52,10 +52,9 @@ public interface PowerDao {
      * @param powerId
      * @return
      */
-    @Select({" SELECT DATE_FORMAT(pmr.read_time,'%Y%m%d%H') as time, min(pmr.epp) as power_value\n" +
+    @Select({" SELECT HOUR(pmr.read_time) as time, min(pmr.epp) as power_value\n" +
             "FROM", TABLE_POWER_INFO ," pi,", TABLE_POWER_METER_RECORD ," pmr\n" +
-            "WHERE pi.id = #{powerId} AND pi.id=pmr.power_info_id AND DAY(pmr.read_time)=DAY(NOW()) GROUP BY DATE_FORMAT(pmr.read_time,'%Y%m%d%H'); "})
+            "WHERE pi.id = #{powerId} AND pi.id=pmr.power_info_id AND DAY(pmr.read_time)=DAY(NOW()) GROUP BY time "})
     List<PowerDo> getPowerPerHour(@Param("powerId") Long powerId);
-
 
 }

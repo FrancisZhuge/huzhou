@@ -44,4 +44,11 @@ public interface MonitorService {
      * @return
      */
     List<PowerAndWaterVo> getPowerAndWaterValue(Long companyId);
+
+    /**
+     * 根据company_id 来获取公司当月的用电情况（每天最后一条数据为准）
+     * @param companyId
+     * @return
+     */
+    List<PowerAndWaterVo> getPowerAndWaterValuePerDay(Long companyId);
 }

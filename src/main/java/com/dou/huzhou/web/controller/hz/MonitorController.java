@@ -1,6 +1,7 @@
 package com.dou.huzhou.web.controller.hz;
 
 import com.dou.huzhou.domain.hz.BuildingCompanyVo;
+import com.dou.huzhou.domain.hz.PowerAndWaterVo;
 import com.dou.huzhou.service.hz.MonitorService;
 import com.dou.huzhou.web.response.ResponseUtil;
 import org.apache.shiro.SecurityUtils;
@@ -52,7 +53,7 @@ public class MonitorController {
 
     /**
      * 返回今天water和power每隔一小时的用量
-     * @param id
+     * @param id 公司的id
      * @return
      */
     @RequestMapping("/powerAndWater")
@@ -62,7 +63,28 @@ public class MonitorController {
         if (id == null||id ==0L){
             return ResponseUtil.responseIllegalArgus();
         }
-        //todo:获取water和power的读数
+        List<PowerAndWaterVo> powerAndWaterVos = null;
+        try {
+            powerAndWaterVos = monitorService.getPowerAndWaterValue(id);
+        } catch (Exception e) {
+            LOGGER.error("getPowerAndWaterPerHour failed. ");
+            return ResponseUtil.responmseServerError();
+        }
+        return ResponseUtil.responseOkWithData(powerAndWaterVos);
+    }
+
+    /**
+     * 公司当月能耗
+     * @param id
+     * @return
+     */
+    @RequestMapping("/calendar")
+    @ResponseBody
+    public String calendar(@RequestParam(value = "id", required = false) Long id){
+        //参数错误
+        if (id == null||id ==0L){
+            return ResponseUtil.responseIllegalArgus();
+        }
         return null;
     }
 }

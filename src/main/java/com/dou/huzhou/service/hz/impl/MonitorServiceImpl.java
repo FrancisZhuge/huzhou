@@ -2,12 +2,13 @@ package com.dou.huzhou.service.hz.impl;
 
 import com.dou.huzhou.dao.hz.MonitorDao;
 import com.dou.huzhou.domain.UserInfo;
-import com.dou.huzhou.domain.hz.BuildingCompanyVo;
-import com.dou.huzhou.domain.hz.MapVo;
-import com.dou.huzhou.domain.hz.PowerAndWaterVo;
+import com.dou.huzhou.domain.hz.*;
 import com.dou.huzhou.service.UserService;
 import com.dou.huzhou.service.hz.MonitorService;
+import com.dou.huzhou.service.hz.PowerService;
 import com.dou.huzhou.service.hz.RoleService;
+import com.dou.huzhou.service.hz.WaterService;
+import com.dou.huzhou.utils.hz.TimeUtil;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,6 +39,12 @@ public class MonitorServiceImpl implements MonitorService{
 
     @Autowired
     private RoleService roleService;
+
+    @Autowired
+    private PowerService powerService;
+
+    @Autowired
+    private WaterService waterService;
 
     @Override
     public List<BuildingCompanyVo> getInfo(Subject user) {
@@ -92,6 +100,85 @@ public class MonitorServiceImpl implements MonitorService{
 
     @Override
     public List<PowerAndWaterVo> getPowerAndWaterValue(Long companyId) {
+        double[] powerValue = getPowerValue(companyId);
+        double[] waterValue = getWaterValue(companyId);
+        List<PowerAndWaterVo> powerAndWaterVos = new ArrayList<>();
+        for(int i=0;i<23;i++){
+            PowerAndWaterVo powerAndWaterVo = new PowerAndWaterVo();
+            powerAndWaterVo.setTime(TimeUtil.getTimeByHour(i+1));
+            powerAndWaterVo.setPowerValue(powerValue[i]);
+            powerAndWaterVo.setWaterValue(waterValue[i]);
+            powerAndWaterVos.add(powerAndWaterVo);
+        }
+        return powerAndWaterVos;
+    }
+
+    @Override
+    public List<PowerAndWaterVo> getPowerAndWaterValuePerDay(Long companyId) {
         return null;
+    }
+
+    /**
+     * 获取每天分时的水表数据
+     * @param companyId
+     * @return
+     */
+    private double[] getWaterValue(Long companyId) {
+        double[] temp = new double[24];
+        double[] waterValue = new double[23];
+        Long[] waterIds = waterService.getWaterIds(companyId);
+        for(int i=0;i<waterIds.length;i++){
+            double[] before = new double[24];
+            List<WaterDo> waterDos = waterService.getWaterPerHour(waterIds[i]);
+            //规整
+            for(WaterDo waterDo:waterDos){
+                before[waterDo.getTime()] = waterDo.getWaterValue();
+            }
+            for(int j=1;j<24;j++){
+                if(before[j]==0D&&before[j-1]!=0D){
+                    before[j]=before[j-1];
+                }
+            }
+            for(int j=0;j<24;j++){
+                temp[j] = temp[j]+before[j];
+            }
+        }
+        //相减
+        for(int i=0;i<23;i++){
+            waterValue[i] = temp[i+1]-temp[i];
+        }
+        return waterValue;
+    }
+
+    /**
+     * 获取每天分时的电表数据
+     * @param companyId
+     * @return
+     */
+    private double[] getPowerValue(Long companyId) {
+        double[] temp = new double[24];
+        double[] powerValue = new double[23];
+        Long[] powerIds = powerService.getPowerIds(companyId);
+        for(int i=0;i<powerIds.length;i++){
+            double[] before = new double[24];
+            List<PowerDo> powerDos = powerService.getPowerPerHour(powerIds[i]);
+            //规整
+            for(PowerDo powerDo:powerDos){
+                before[powerDo.getTime()] = powerDo.getPowerValue();
+            }
+            for(int j=1;j<24;j++){
+                if(before[j]==0D&&before[j-1]!=0D){
+                    before[j]=before[j-1];
+                }
+            }
+            for(int j=0;j<24;j++){
+                temp[j] = temp[j]+before[j];
+            }
+        }
+        //相减
+        for(int i=0;i<23;i++){
+            powerValue[i] = temp[i+1]-temp[i];
+        }
+        return powerValue;
     }
 }

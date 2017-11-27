@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Arrays;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -49,12 +48,12 @@ public class HuzhouApplicationTests {
 	private MonitorService monitorService;
 
 	@Autowired
-	private WaterDao waterDao;
+	private WaterService waterService;
 	@Test
 	public void contextLoads() {
-		List<WaterDo> waterDos = waterDao.getWaterPerHour(38L);
-		for(WaterDo waterDo:waterDos){
-			System.out.println(waterDo);
+		List<PowerAndWaterVo> powerAndWaterValue = monitorService.getPowerAndWaterValue(3L);
+		for(PowerAndWaterVo powerAndWaterVo:powerAndWaterValue){
+			System.out.println(powerAndWaterVo);
 		}
 	}
 }

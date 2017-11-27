@@ -46,12 +46,15 @@ public interface WaterDao {
     Double getLastMouthValue(@Param("id") Long id);
 
     /**
-     * 每小时water读数
+     * 当天每小时water读数
      * @param waterId
      * @return
      */
-    @Select({" SELECT DATE_FORMAT(wmr.read_time,'%Y%m%d%H') as time, min(wmr.consumption) as water_value\n" +
+    @Select({" SELECT HOUR(wmr.read_time) as time, min(wmr.consumption) as water_value\n" +
             "FROM", TABLE_WATER_INFO ," wi,", TABLE_WATER_METER_RECORD ," wmr\n" +
-            "WHERE wi.id = #{waterId} AND wi.id=wmr.water_info_id AND DAY(wmr.read_time)=DAY(NOW()) GROUP BY DATE_FORMAT(wmr.read_time,'%Y%m%d%H'); "})
+            "WHERE wi.id = #{waterId} AND wi.id=wmr.water_info_id AND DAY(wmr.read_time)=DAY(NOW()) GROUP BY time "})
     List<WaterDo> getWaterPerHour(@Param("waterId") Long waterId);
+
+    @Select({"  "})
+    List<WaterDo> getWaterPerDay(@Param("waterId") Long waterId);
 }

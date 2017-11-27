@@ -11,14 +11,14 @@ import java.util.Date;
  * @Email: franciszhuge@163.com
  */
 public class WaterDo {
-    private String time;
+    private int time;
     private Double waterValue;
 
-    public String getTime() {
+    public int getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(int time) {
         this.time = time;
     }
 

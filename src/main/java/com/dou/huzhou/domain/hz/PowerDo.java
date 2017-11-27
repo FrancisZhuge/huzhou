@@ -8,14 +8,14 @@ package com.dou.huzhou.domain.hz;
  * @Email: franciszhuge@163.com
  */
 public class PowerDo {
-    private String time;
+    private int time;
     private Double powerValue;
 
-    public String getTime() {
+    public int getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(int time) {
         this.time = time;
     }
 

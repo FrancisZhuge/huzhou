@@ -8,8 +8,17 @@ package com.dou.huzhou.domain.hz;
  * @Email: franciszhuge@163.com
  */
 public class PowerAndWaterVo {
+    private String time;
     private Double powerValue;
     private Double waterValue;
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
 
     public Double getPowerValue() {
         return powerValue;
@@ -30,7 +39,8 @@ public class PowerAndWaterVo {
     @Override
     public String toString() {
         return "PowerAndWaterVo{" +
-                "powerValue=" + powerValue +
+                "time='" + time + '\'' +
+                ", powerValue=" + powerValue +
                 ", waterValue=" + waterValue +
                 '}';
     }
