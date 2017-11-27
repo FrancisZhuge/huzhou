@@ -59,4 +59,24 @@ public interface WaterDao {
      */
     @Select({" SELECT Day(wmr.read_time) as time, max(wmr.consumption) as water_value FROM ", TABLE_WATER_INFO ," wi, ", TABLE_WATER_METER_RECORD ," wmr WHERE wi.id = #{waterId} AND wi.id=wmr.water_info_id AND MONTH(wmr.read_time)=MONTH(NOW()) GROUP BY time "})
     List<WaterDo> getWaterPerDay(@Param("waterId") Long waterId);
+
+    /**
+     * 当天时间water读数
+     * 0点读数就是    0点过去的第一个值
+     * @param time  日期 整数就行 1号time=1 2号time=2
+     * @param waterId 水表id
+     * @return
+     */
+    @Select({" SELECT HOUR(wmr.read_time) as time, min(wmr.consumption) as water_value FROM ", TABLE_WATER_INFO ," wi, ", TABLE_WATER_METER_RECORD ," wmr WHERE wi.id = #{waterId} AND DAY(wmr.read_time) = #{time} AND wi.id=wmr.water_info_id GROUP BY time "})
+    List<WaterDo> getWaterByPercentage(@Param("time") int time, @Param("waterId") Long waterId);
+
+    /**
+     * 查找当前天后一天的第一条读数
+     * 0点读数就是    0点过去的第一个值
+     * @param time  日期 整数就行 1号time=1 2号time=2
+     * @param waterId 水表id
+     * @return
+     */
+    @Select({" SELECT wmr.consumption FROM ", TABLE_WATER_INFO ," wi, ", TABLE_WATER_METER_RECORD ," wmr WHERE wi.id = #{waterId} AND wi.id=wmr.water_info_id AND DAY(wmr.read_time)=#{time}+1 ORDER BY wmr.read_time ASC LIMIT 0,1 "})
+    double getTomorrowFirstValue(@Param("time") int time, @Param("waterId") Long waterId);
 }

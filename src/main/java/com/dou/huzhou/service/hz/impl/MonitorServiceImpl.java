@@ -128,6 +128,60 @@ public class MonitorServiceImpl implements MonitorService{
         return powerAndWaterVos;
     }
 
+    @Override
+    public List<PowerAndWaterVo> getPowerAndWaterValueByPercentage(Integer time, Long companyId) {
+        double[] waterValueByPercentage = getWaterValueByPercentage(time, companyId);
+        double[] powerValueByPercentage = getPowerValueByPercentage(time, companyId);
+        List<PowerAndWaterVo> powerAndWaterVos = new ArrayList<>();
+        for(int i=0;i<24;i++){
+            PowerAndWaterVo powerAndWaterVo = new PowerAndWaterVo();
+            powerAndWaterVo.setTime(TimeUtil.getTimeByDayAndHour(time,i+1));
+            powerAndWaterVo.setWaterValue(waterValueByPercentage[i]);
+            powerAndWaterVo.setPowerValue(powerValueByPercentage[i]);
+            powerAndWaterVos.add(powerAndWaterVo);
+        }
+        return powerAndWaterVos;
+    }
+
+    /**
+     * 百分比的用水量
+     * @param time
+     * @param companyId
+     * @return
+     */
+    private double[] getWaterValueByPercentage(Integer time, Long companyId){
+        double[] temp = new double[25];
+        double[] waterValue = new double[24];
+        Long[] waterIds = waterService.getWaterIds(companyId);
+        for(int i=0;i<waterIds.length;i++){
+            double[] before = new double[25];
+            List<WaterDo> waterDos = waterService.getWaterByPercentage(time, waterIds[i]);
+            //规整
+            for(WaterDo waterDo:waterDos){
+                before[waterDo.getTime()] = waterDo.getWaterValue();
+            }
+            //更新第25个值
+            if(TimeUtil.isToday(time)){
+                //什么都不做
+            }else {
+                before[24] = waterService.getTomorrowFirstValue(time,waterIds[i]);
+            }
+            for(int j=1;j<25;j++){
+                if(before[j]==0D&&before[j-1]!=0D){
+                    before[j]=before[j-1];
+                }
+            }
+            for(int j=0;j<25;j++){
+                temp[j] = temp[j]+before[j];
+            }
+        }
+        //相减
+        for(int i=0;i<24;i++){
+            waterValue[i] = temp[i+1]-temp[i];
+        }
+        return waterValue;
+    }
+
     /**
      * 当天每小时用水量
      * @param companyId
@@ -196,6 +250,45 @@ public class MonitorServiceImpl implements MonitorService{
             waterValue[i] = temp[i+1]-temp[i];
         }
         return waterValue;
+    }
+
+    /**
+     * 百分比的用电量
+     * @param time
+     * @param companyId
+     * @return
+     */
+    private double[] getPowerValueByPercentage(Integer time, Long companyId){
+        double[] temp = new double[25];
+        double[] powerValue = new double[24];
+        Long[] powerIds = powerService.getPowerIds(companyId);
+        for(int i=0;i<powerIds.length;i++){
+            double[] before = new double[25];
+            List<PowerDo> powerDos = powerService.getPowerByPercentage(time, powerIds[i]);
+            //规整
+            for(PowerDo powerDo:powerDos){
+                before[powerDo.getTime()] = powerDo.getPowerValue();
+            }
+            //更新第25个值
+            if(TimeUtil.isToday(time)){
+                //什么都不做
+            }else {
+                before[24] = powerService.getTomorrowFirstValue(time,powerIds[i]);
+            }
+            for(int j=1;j<25;j++){
+                if(before[j]==0D&&before[j-1]!=0D){
+                    before[j]=before[j-1];
+                }
+            }
+            for(int j=0;j<25;j++){
+                temp[j] = temp[j]+before[j];
+            }
+        }
+        //相减
+        for(int i=0;i<24;i++){
+            powerValue[i] = temp[i+1]-temp[i];
+        }
+        return powerValue;
     }
 
     /**

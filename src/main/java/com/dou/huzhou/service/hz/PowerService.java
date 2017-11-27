@@ -48,4 +48,22 @@ public interface PowerService {
      * @return
      */
     List<PowerDo> getPowerPerDay(Long powerId);
+
+    /**
+     * 当天时间power读数
+     * 0点读数就是    0点过去的第一个值
+     * @param time  日期 整数就行 1号time=1 2号time=2
+     * @param powerId 电表id
+     * @return
+     */
+    List<PowerDo> getPowerByPercentage(int time, Long powerId);
+
+    /**
+     * 查找当前天后一天的第一条读数
+     * 0点读数就是    0点过去的第一个值
+     * @param time  日期 整数就行 1号time=1 2号time=2
+     * @param powerId 电表id
+     * @return
+     */
+    double getTomorrowFirstValue(int time, Long powerId);
 }

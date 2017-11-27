@@ -81,4 +81,26 @@ public class PowerServiceImpl implements PowerService{
         }
         return powerDos;
     }
+
+    @Override
+    public List<PowerDo> getPowerByPercentage(int time, Long powerId) {
+        List<PowerDo> powerDos = null;
+        try {
+            powerDos = powerDao.getPowerByPercentage(time,powerId);
+        } catch (Exception e) {
+            LOGGER.error("getPowerByPercentage failed.");
+        }
+        return powerDos;
+    }
+
+    @Override
+    public double getTomorrowFirstValue(int time, Long powerId) {
+        Double value = null;
+        try {
+            value = powerDao.getTomorrowFirstValue(time,powerId);
+        } catch (Exception e) {
+            LOGGER.error("getTomorrowFirstValue failed.");
+        }
+        return value;
+    }
 }

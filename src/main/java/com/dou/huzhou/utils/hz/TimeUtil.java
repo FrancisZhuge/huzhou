@@ -84,4 +84,45 @@ public class TimeUtil {
         return format;
     }
 
+    /**
+     * 判断输入的整数是否是今天的日期
+     * @param time
+     * @return
+     */
+    public static boolean isToday(int time){
+        Calendar cal = Calendar.getInstance();
+        int today = cal.get(Calendar.DAY_OF_MONTH);
+        if (today == time)
+            return true;
+        else
+            return false;
+    }
+
+    /**
+     * 返回当月指定日期的指定时间的整点时间
+     * @param day 指定日期，1表示1号
+     * @param hour 指定时间，1 表示1点
+     * @return
+     */
+    public static String getTimeByDayAndHour(int day, int hour){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Calendar cal = Calendar.getInstance();
+        Date date = null;
+        cal.set(Calendar.DAY_OF_MONTH,day);
+        cal.set(Calendar.HOUR_OF_DAY,hour);
+        cal.set(Calendar.MINUTE,0);
+        cal.set(Calendar.SECOND,0);
+        date = new Date(cal.getTimeInMillis());
+        String format = null;
+        try {
+            format = sdf.format(date);
+        } catch (Exception e) {
+            LOGGER.error("getTimeByDayAndHour failed. ");
+        }
+        return format;
+    }
+    public static void main(String[] args) {
+        String timeByDayAndHour = getTimeByDayAndHour(24, 1);
+        System.out.println(timeByDayAndHour);
+    }
 }

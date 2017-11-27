@@ -114,7 +114,7 @@ public class MonitorController {
         }
         List<PowerAndWaterVo> powerAndWaterVos = null;
         try {
-
+            powerAndWaterVos = monitorService.getPowerAndWaterValueByPercentage(time,id);
         }catch (Exception e) {
             LOGGER.error("percentage failed. ");
             return ResponseUtil.responmseServerError();

@@ -80,4 +80,25 @@ public class WaterServiceImpl implements WaterService{
         return waterDos;
     }
 
+    @Override
+    public List<WaterDo> getWaterByPercentage(int time, Long waterId) {
+        List<WaterDo> waterDos = null;
+        try {
+            waterDos = waterDao.getWaterByPercentage(time,waterId);
+        } catch (Exception e) {
+            LOGGER.error("getWaterByPercentage failed.");
+        }
+        return waterDos;
+    }
+
+    @Override
+    public double getTomorrowFirstValue(int time, Long waterId) {
+        Double value = null;
+        try {
+            value = waterDao.getTomorrowFirstValue(time,waterId);
+        } catch (Exception e) {
+            LOGGER.error("getTomorrowFirstValue failed.");
+        }
+        return value;
+    }
 }

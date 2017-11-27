@@ -60,4 +60,24 @@ public interface PowerDao {
      */
     @Select({" SELECT Day(pmr.read_time) as time, max(pmr.epp) as power_value FROM ", TABLE_POWER_INFO ," pi, ", TABLE_POWER_METER_RECORD ," pmr WHERE pi.id = #{powerId} AND pi.id=pmr.power_info_id AND MONTH(pmr.read_time)=MONTH(NOW()) GROUP BY time "})
     List<PowerDo> getPowerPerDay(@Param("powerId") Long powerId);
+
+    /**
+     * 当天时间power读数
+     * 0点读数就是    0点过去的第一个值
+     * @param time  日期 整数就行 1号time=1 2号time=2
+     * @param powerId 电表id
+     * @return
+     */
+    @Select({" SELECT HOUR(pmr.read_time) as time, min(pmr.epp) as power_value FROM ", TABLE_POWER_INFO ," pi, ", TABLE_POWER_METER_RECORD ," pmr WHERE pi.id = #{powerId} AND DAY(pmr.read_time) = #{time} AND pi.id=pmr.power_info_id GROUP BY time "})
+    List<PowerDo> getPowerByPercentage(@Param("time") int time, @Param("powerId") Long powerId);
+
+    /**
+     * 查找当前天后一天的第一条读数
+     * 0点读数就是    0点过去的第一个值
+     * @param time  日期 整数就行 1号time=1 2号time=2
+     * @param powerId 水表id
+     * @return
+     */
+    @Select({" SELECT pmr.epp FROM ", TABLE_POWER_INFO ," pi, ", TABLE_POWER_METER_RECORD ," pmr WHERE pi.id = #{powerId} AND pi.id=pmr.power_info_id AND DAY(pmr.read_time)=#{time}+1 ORDER BY pmr.read_time ASC LIMIT 0,1 "})
+    double getTomorrowFirstValue(@Param("time") int time, @Param("powerId") Long powerId);
 }
