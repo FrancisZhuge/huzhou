@@ -57,12 +57,14 @@ public interface PowerDao {
             "AND\n" +
             "  pi.id=pmr.power_info_id\n" +
             "AND\n" +
-            "  MONTH(pmr.read_time)=MONTH(NOW())-1\n" +
+            "  year(pmr.read_time)=year(date_sub(CURDATE(),INTERVAL 1 MONTH))\n" +
+            "AND\n" +
+            "  month(pmr.read_time)=month(date_sub(CURDATE(),INTERVAL 1 MONTH))\n" +
             "ORDER BY\n" +
-            "  pmr.read_time DESC \n" +
-            "LIMIT\n" +
+            "  pmr.read_time DESC\n" +
+            "LIMIT \n" +
             "  0,1;" +
-            " "})
+            ""})
     Double getLastMouthValue(@Param("id") Long id);
 
     /**
@@ -82,7 +84,7 @@ public interface PowerDao {
             "AND\n" +
             "  pi.id=pmr.power_info_id\n" +
             "AND\n" +
-            "  DAY(pmr.read_time)=DAY(NOW())\n" +
+            "  DATE (pmr.read_time)=DATE(now())\n" +
             "GROUP BY\n" +
             "  time;" +
             " "})
@@ -112,24 +114,50 @@ public interface PowerDao {
             ""})
     Double getPowerLastOneYesterday(@Param("powerId") Long powerId);
 
-
-
-
-
-
-
-
-
-
-
-
     /**
-     * 当月每天power读数
+     * 根据电表的主键来获取当月的每天的数值(每个时间段内最后的值作为这个时间段的结束)
      * @param powerId
      * @return
      */
-    @Select({" SELECT Day(pmr.read_time) as time, max(pmr.epp) as power_value FROM ", TABLE_POWER_INFO ," pi, ", TABLE_POWER_METER_RECORD ," pmr WHERE pi.id = #{powerId} AND pi.id=pmr.power_info_id AND MONTH(pmr.read_time)=MONTH(NOW()) GROUP BY time "})
+    @Select({"" +
+            "SELECT\n" +
+            "  Day(pmr.read_time) as time,\n" +
+            "  max(pmr.epp) as power_value\n" +
+            "FROM\n" +
+            "  ", TABLE_POWER_INFO ," pi,\n" +
+            "  ", TABLE_POWER_METER_RECORD ," pmr\n" +
+            "WHERE\n" +
+            "  pi.id = #{powerId}\n" +
+            "AND\n" +
+            "  pi.id=pmr.power_info_id\n" +
+            "AND\n" +
+            "  YEAR (pmr.read_time)=YEAR(now())\n" +
+            "AND\n" +
+            "  MONTH (pmr.read_time)=MONTH(now())\n" +
+            "GROUP BY\n" +
+            "  time;" +
+            ""})
     List<PowerDo> getPowerPerDay(@Param("powerId") Long powerId);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * 当天时间power读数

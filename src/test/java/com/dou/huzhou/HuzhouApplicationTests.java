@@ -58,7 +58,7 @@ public class HuzhouApplicationTests {
 	public void contextLoads() {
 
 
-		List<PowerAndWaterVo> powerAndWaterPerHour = monitorService.getPowerAndWaterPerHour(36L);
+		List<PowerAndWaterVo> powerAndWaterPerHour = monitorService.getPowerAndWaterPerDay(38L);
 		for(PowerAndWaterVo powerAndWaterVo:powerAndWaterPerHour){
 			System.out.println(powerAndWaterVo);
 		}

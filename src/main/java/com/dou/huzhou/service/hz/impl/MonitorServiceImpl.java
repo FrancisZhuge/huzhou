@@ -148,7 +148,7 @@ public class MonitorServiceImpl implements MonitorService{
     }
 
     /**
-     * 当天每小时用水量
+     根据{companyId} 来获取公司当天的分时用水情况
      * @param companyId
      * @return
      */
@@ -242,8 +242,8 @@ public class MonitorServiceImpl implements MonitorService{
         double[] waterValuePerDay = getWaterPerDay(companyId);
         double[] powerValuePerDay = getPowerPerDay(companyId);
         List<PowerAndWaterVo> powerAndWaterVos = new ArrayList<>();
-        int dayNumber = TimeUtil.getCurrentYear();
-        for(int i=0;i<dayNumber;i++){
+        int days = TimeUtil.getThisMonthDays();
+        for(int i=0;i<days;i++){
             PowerAndWaterVo powerAndWaterVo = new PowerAndWaterVo();
             powerAndWaterVo.setTime(TimeUtil.getTimeByDay(i+1));
             powerAndWaterVo.setWaterValue(waterValuePerDay[i]);
@@ -254,7 +254,7 @@ public class MonitorServiceImpl implements MonitorService{
     }
 
     /**
-     * 根据{companyId}来获取公司当月的每日用水情况（每天第一条数据为准）
+     * 根据{companyId} 来获取公司当月的分天用电和用水情况（每天，最后一个数值作为这个时间段的结束值）
      * @param companyId
      * @return
      */
@@ -270,6 +270,8 @@ public class MonitorServiceImpl implements MonitorService{
             for(WaterDo waterDo:waterDos){
                 before[waterDo.getTime()] = waterDo.getWaterValue();
             }
+            Double lastMonthValue = waterService.getLastMonthValue(waterIds[i]);
+            before[0] = lastMonthValue;
             for(int j=1;j<days+1;j++){
                 if(before[j]==0D&&before[j-1]!=0D){
                     before[j]=before[j-1];
@@ -298,27 +300,23 @@ public class MonitorServiceImpl implements MonitorService{
         for(int i=0;i<powerIds.length;i++){
             double[] before = new double[days+1];
             List<PowerDo> powerDos = powerService.getPowerPerDay(powerIds[i]);
-            Double lastMonthValue = powerService.getLastMonthValue(powerIds[i]);
-            if(lastMonthValue==null){
-                before[0] = 0D;
-            }else {
-                before[0] = lastMonthValue;
-            }
             //规整
             for(PowerDo powerDo:powerDos){
                 before[powerDo.getTime()] = powerDo.getPowerValue();
             }
-            for(int j=1;j<32;j++){
+            Double lastMonthValue = powerService.getLastMonthValue(powerIds[i]);
+            before[0] = lastMonthValue;
+            for(int j=1;j<days+1;j++){
                 if(before[j]==0D&&before[j-1]!=0D){
                     before[j]=before[j-1];
                 }
             }
-            for(int j=0;j<32;j++){
+            for(int j=0;j<days+1;j++){
                 temp[j] = temp[j]+before[j];
             }
         }
         //相减
-        for(int i=0;i<31;i++){
+        for(int i=0;i<days;i++){
             powerValue[i] = temp[i+1]-temp[i];
         }
         return powerValue;

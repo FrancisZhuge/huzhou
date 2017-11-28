@@ -55,6 +55,9 @@ public class WaterServiceImpl implements WaterService{
         } catch (Exception e) {
             LOGGER.error("getLastMonthValue failed.");
         }
+        if(value == null){
+            return 0D;
+        }
         return value;
     }
 

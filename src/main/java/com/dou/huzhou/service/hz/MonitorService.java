@@ -40,14 +40,14 @@ public interface MonitorService {
     List<BuildingCompanyVo> getInfoByAreaAndCompany(Long areaId, Long companyId);
 
     /**
-     * 根据{companyId} 来获取公司当天的分时用电和用水情况（每小时，以整点右边最近的时间为整点时间）
+     * 根据{companyId} 来获取公司当天的分时用电和用水情况（每小时，最后一个数值作为这个时间段的结束值）
      * @param companyId 公司的主键
      * @return
      */
     List<PowerAndWaterVo> getPowerAndWaterPerHour(Long companyId);
 
     /**
-     * 根据{companyId}来获取公司当月的每日用电用水情况（每天第一条数据为准）
+     * 根据{companyId} 来获取公司当月的分天用电和用水情况（每天，最后一个数值作为这个时间段的结束值）
      * @param companyId
      * @return
      */

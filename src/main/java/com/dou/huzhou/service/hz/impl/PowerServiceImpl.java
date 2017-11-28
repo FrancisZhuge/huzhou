@@ -58,6 +58,8 @@ public class PowerServiceImpl implements PowerService{
         } catch (Exception e) {
             LOGGER.error("getLastMonthValue failed.");
         }
+        if(value == null)
+            return 0D;
         return value;
     }
 
