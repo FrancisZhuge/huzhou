@@ -51,29 +51,27 @@ public interface PowerService {
     double getPowerLastOneYesterday(Long powerId);
 
     /**
-     * 当月每天的电表读数
+     * 根据电表的主键来获取当月的每天的数值(每个时间段内最后的值作为这个时间段的结束)
      * @param powerId
      * @return
      */
     List<PowerDo> getPowerPerDay(Long powerId);
 
     /**
-     * 当天时间power读数
-     * 0点读数就是    0点过去的第一个值
-     * @param time  日期 整数就行 1号time=1 2号time=2
+     * 返回主键为{id}鼠标在本年本月第（day）日的百分比能耗
+     * @param day  日期 整数就行 1号time=1 2号time=2
      * @param powerId 电表id
      * @return
      */
-    List<PowerDo> getPowerByPercentage(int time, Long powerId);
+    List<PowerDo> getPowerByPercentage(int day, Long powerId);
 
     /**
-     * 查找当前天后一天的第一条读数
-     * 0点读数就是    0点过去的第一个值
-     * @param time  日期 整数就行 1号time=1 2号time=2
-     * @param powerId 电表id
+     * 返回主键为{id}电表在第（day）日的前一天最后一条数据的值
+     * @param day
+     * @param powerId
      * @return
      */
-    double getTomorrowFirstValue(int time, Long powerId);
+    Double getPowerLastOneYesterday(int day, Long powerId);
 
     /**
      * 根据year month 和powerId来获取某个电表的峰谷能耗
@@ -85,11 +83,11 @@ public interface PowerService {
     List<PeakAndVallyDo> getPeakAndVally(int year, int month, Long powerId);
 
     /**
-     * 根据year month 和powerId来获取某个电表下个月第一条的峰谷能耗数据
+     * 根据year month 和powerId来获取某个电表上个月最后一条的峰谷能耗数据
      * @param year 年份，2016 表示2016年
      * @param month 月份，9 表示9月
      * @param powerId 电表的主键
      * @return
      */
-    PeakAndVallyDo getNextMonthPeakAndVally(int year, int month, Long powerId);
+    PeakAndVallyDo getLastMonthPeakAndVally(int year, int month, Long powerId);
 }

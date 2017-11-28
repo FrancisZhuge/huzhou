@@ -132,53 +132,57 @@ public interface WaterDao {
             ""})
     List<WaterDo> getWaterPerDay(@Param("waterId") Long waterId);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     /**
-     * 当天时间water读数
-     * 0点读数就是    0点过去的第一个值
-     * @param time  日期 整数就行 1号time=1 2号time=2
+     * 返回主键为{id}水表在本年本月第（day）日的百分比能耗
+     * @param day  日期 整数就行 1号time=1 2号time=2
      * @param waterId 水表id
      * @return
      */
-    @Select({" SELECT HOUR(wmr.read_time) as time, min(wmr.consumption) as water_value FROM ", TABLE_WATER_INFO ," wi, ", TABLE_WATER_METER_RECORD ," wmr WHERE wi.id = #{waterId} AND DAY(wmr.read_time) = #{time} AND wi.id=wmr.water_info_id GROUP BY time "})
-    List<WaterDo> getWaterByPercentage(@Param("time") int time, @Param("waterId") Long waterId);
+    @Select({"" +
+            "SELECT\n" +
+            "  HOUR(wmr.read_time) as time,\n" +
+            "  max(wmr.consumption) as water_value\n" +
+            "FROM\n" +
+            "  ", TABLE_WATER_INFO ," wi,\n" +
+            "  ", TABLE_WATER_METER_RECORD ," wmr\n" +
+            "WHERE\n" +
+            "  wi.id = #{waterId}\n" +
+            "AND\n" +
+            "  wi.id=wmr.water_info_id\n" +
+            "AND\n" +
+            "  year(wmr.read_time) = year(now())\n" +
+            "AND\n" +
+            "  month(wmr.read_time) = month(now())\n" +
+            "AND\n" +
+            "  DAY(wmr.read_time) = #{day}\n" +
+            "GROUP BY\n" +
+            "  time;" +
+            ""})
+    List<WaterDo> getWaterByPercentage(@Param("day") int day, @Param("waterId") Long waterId);
 
     /**
-     * 查找当前天后一天的第一条读数
-     * 0点读数就是    0点过去的第一个值
-     * @param time  日期 整数就行 1号time=1 2号time=2
+     * 返回主键为{id}水表在time日期指定的前一天最后一条数据的值
+     * @param time  日期 2017-01-01
      * @param waterId 水表id
      * @return
      */
-    @Select({" SELECT wmr.consumption FROM ", TABLE_WATER_INFO ," wi, ", TABLE_WATER_METER_RECORD ," wmr WHERE wi.id = #{waterId} AND wi.id=wmr.water_info_id AND DAY(wmr.read_time)=#{time}+1 ORDER BY wmr.read_time ASC LIMIT 0,1 "})
-    double getTomorrowFirstValue(@Param("time") int time, @Param("waterId") Long waterId);
+    @Select({"" +
+            "SELECT\n" +
+            "  wmr.consumption\n" +
+            "FROM\n" +
+            "  ", TABLE_WATER_INFO ," wi,\n" +
+            "  ", TABLE_WATER_METER_RECORD ," wmr\n" +
+            "WHERE\n" +
+            "  wi.id = #{waterId}\n" +
+            "AND\n" +
+            "  wi.id=wmr.water_info_id\n" +
+            "AND\n" +
+            "  DATE (wmr.read_time) = DATE (date_sub(#{time},INTERVAL 1 DAY))\n" +
+            "ORDER BY\n" +
+            "  wmr.read_time DESC\n" +
+            "LIMIT\n" +
+            "  0,1;" +
+            ""})
+    Double getWaterLastOneYesterdayByDay(@Param("time") String time, @Param("waterId") Long waterId);
+
 }

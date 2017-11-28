@@ -139,45 +139,84 @@ public interface PowerDao {
             ""})
     List<PowerDo> getPowerPerDay(@Param("powerId") Long powerId);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     /**
-     * 当天时间power读数
-     * 0点读数就是    0点过去的第一个值
-     * @param time  日期 整数就行 1号time=1 2号time=2
+     * 返回主键为{id}鼠标在本年本月第（day）日的百分比能耗
+     * @param day  日期 整数就行 1号time=1 2号time=2
      * @param powerId 电表id
      * @return
      */
-    @Select({" SELECT HOUR(pmr.read_time) as time, min(pmr.epp) as power_value FROM ", TABLE_POWER_INFO ," pi, ", TABLE_POWER_METER_RECORD ," pmr WHERE pi.id = #{powerId} AND DAY(pmr.read_time) = #{time} AND pi.id=pmr.power_info_id GROUP BY time "})
-    List<PowerDo> getPowerByPercentage(@Param("time") int time, @Param("powerId") Long powerId);
+    @Select({"" +
+            "SELECT\n" +
+            "  Day(pmr.read_time) as time,\n" +
+            "  max(pmr.epp) as power_value\n" +
+            "FROM\n" +
+            "  ", TABLE_POWER_INFO ," pi,\n" +
+            "  ", TABLE_POWER_METER_RECORD ," pmr\n" +
+            "WHERE\n" +
+            "  pi.id = #{powerId}\n" +
+            "AND\n" +
+            "  pi.id=pmr.power_info_id\n" +
+            "AND\n" +
+            "  YEAR (pmr.read_time)=YEAR(now())\n" +
+            "AND\n" +
+            "  MONTH (pmr.read_time)=MONTH(now())\n" +
+            "AND\n" +
+            "  DAY(pmr.read_time) = #{day}\n" +
+            "GROUP BY\n" +
+            "  time;" +
+            ""})
+    List<PowerDo> getPowerByPercentage(@Param("day") int day, @Param("powerId") Long powerId);
 
     /**
-     * 查找当前天后一天的第一条读数
-     * 0点读数就是    0点过去的第一个值
-     * @param time  日期 整数就行 1号time=1 2号time=2
-     * @param powerId 水表id
+     * 返回主键为{id}电表在time日期指定的前一天最后一条数据的值
+     * @param time  日期 2017-01-01
+     * @param powerId 电表id
      * @return
      */
-    @Select({" SELECT pmr.epp FROM ", TABLE_POWER_INFO ," pi, ", TABLE_POWER_METER_RECORD ," pmr WHERE pi.id = #{powerId} AND pi.id=pmr.power_info_id AND DAY(pmr.read_time)=#{time}+1 ORDER BY pmr.read_time ASC LIMIT 0,1 "})
-    double getTomorrowFirstValue(@Param("time") int time, @Param("powerId") Long powerId);
+    @Select({"" +
+            "SELECT\n" +
+            "  pmr.epp\n" +
+            "FROM\n" +
+            "  ", TABLE_POWER_INFO ," pi,\n" +
+            "  ", TABLE_POWER_METER_RECORD ," pmr\n" +
+            "WHERE\n" +
+            "  pi.id = #{powerId}\n" +
+            "AND\n" +
+            "  pi.id=pmr.power_info_id\n" +
+            "AND\n" +
+            "  DATE (pmr.read_time) = DATE (date_sub(#{time},INTERVAL 1 DAY))\n" +
+            "ORDER BY\n" +
+            "  pmr.read_time DESC\n" +
+            "LIMIT\n" +
+            "  0,1;" +
+            ""})
+    Double getWaterLastOneYesterdayByDay(@Param("time") String time,@Param("powerId") Long powerId);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * 根据year month 和powerId来获取某个电表的峰谷能耗
@@ -189,9 +228,9 @@ public interface PowerDao {
     @Select({"  " +
             "SELECT\n" +
             "  day(pmr.read_time) as time,\n" +
-            "  min(pmr. ", TIP ," ) as tip,\n" +
-            "  min(pmr. ", PEAK ," ) as peak,\n" +
-            "  min(pmr. ", VALLY ," ) as vally\n" +
+            "  max(pmr. ", TIP ," ) as tip,\n" +
+            "  max(pmr. ", PEAK ," ) as peak,\n" +
+            "  max(pmr. ", VALLY ," ) as vally\n" +
             "FROM\n" +
             "  ",TABLE_POWER_INFO," pi,\n" +
             "  ",TABLE_POWER_METER_RECORD," pmr\n" +
@@ -213,7 +252,7 @@ public interface PowerDao {
                                          );
 
     /**
-     * 根据year month 和powerId来获取某个电表下个月第一条的峰谷能耗数据
+     * 根据year month 和powerId来获取某个电表上个月最后一条的峰谷能耗数据
      * @param year 年份，2016 表示2016年
      * @param month 月份，9 表示9月
      * @param powerId 电表的主键
@@ -221,26 +260,26 @@ public interface PowerDao {
      */
     @Select({"" +
             "SELECT\n" +
-            "  min(pmr. ", TIP ," ) as tip,\n" +
-            "  min(pmr. ", PEAK ," ) as peak,\n" +
-            "  min(pmr. ", VALLY ," ) as vally\n" +
+            "  pmr.", TIP ," as tip,\n" +
+            "  pmr.", PEAK ," as peak,\n" +
+            "  pmr.", VALLY ," as vally\n" +
             "FROM\n" +
             "  ",TABLE_POWER_INFO," pi,\n" +
             "  ",TABLE_POWER_METER_RECORD," pmr\n" +
             "WHERE\n" +
             "  pi.id = #{powerId}\n" +
-            "AND\n" +
+            "  AND\n" +
             "  pi.id=pmr.power_info_id\n" +
-            "AND\n" +
+            "  AND\n" +
             "  YEAR(pmr.read_time)=#{year}\n" +
-            "AND\n" +
-            "  MONTH(pmr.read_time)=#{month}+1\n" +
+            "  AND\n" +
+            "  MONTH(pmr.read_time)=#{month}-1\n" +
             "ORDER BY\n" +
-            "  pmr.read_time\n" +
+            "  pmr.read_time DESC\n" +
             "LIMIT\n" +
             "  0,1;" +
             ""})
-    PeakAndVallyDo getNextMonthPeakAndVally(
+    PeakAndVallyDo getLastMonthPeakAndVally(
             @Param("year") int year,
             @Param("month") int month,
             @Param("powerId") Long powerId

@@ -67,28 +67,15 @@ public class TimeUtil {
         return maximum;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public static String getTimeByDay(int i){
+    /**
+     * 根据指定的日期获得本年本月+指定的{day}组合的字符串为yyyy-MM-dd的类型
+     * @param day
+     * @return
+     */
+    public static String getTimeByDay(int day){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.DAY_OF_MONTH,i);
+        cal.set(Calendar.DAY_OF_MONTH,day);
         Date date = new Date(cal.getTimeInMillis());
         String format = null;
         try {
@@ -98,37 +85,6 @@ public class TimeUtil {
         }
         return format;
     }
-
-    /**
-     * 判断输入的整数是否是今天的日期
-     * @param day
-     * @return
-     */
-    public static boolean isToday(int day){
-        Calendar cal = Calendar.getInstance();
-        int today = cal.get(Calendar.DAY_OF_MONTH);
-        if (today == day)
-            return true;
-        else
-            return false;
-    }
-
-    /**
-     * 判断{year}.{month}是否是当前年的当前月
-     * @param year
-     * @param month
-     * @return
-     */
-    public static boolean isThisMonth(int year, int month){
-        Calendar cal = Calendar.getInstance();
-        int thisYear = cal.get(Calendar.YEAR);
-        int thisMonth = cal.get(Calendar.MONTH)+1;
-        if(thisYear == year&&thisMonth==month){
-            return true;
-        }
-        return false;
-    }
-
 
     /**
      * 返回当月指定日期的指定时间的整点时间
@@ -150,6 +106,29 @@ public class TimeUtil {
             format = sdf.format(date);
         } catch (Exception e) {
             LOGGER.error("getTimeByDayAndHour failed. ");
+        }
+        return format;
+    }
+
+    /**
+     * 通过指定{year}{month}{day}来返回yyyy-MM-dd格式的时间字符串
+     * @param year
+     * @param month
+     * @param day
+     * @return
+     */
+    public static String getTimeByYearAndMonth(int year, int month, int day){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, year);
+        cal.set(Calendar.MONTH, month - 1);
+        cal.set(Calendar.DAY_OF_MONTH,day);
+        Date date = new Date(cal.getTimeInMillis());
+        String format = null;
+        try {
+            format = sdf.format(date);
+        } catch (Exception e) {
+            LOGGER.error("getTimeByYearAndMonth failed. ");
         }
         return format;
     }
@@ -190,23 +169,4 @@ public class TimeUtil {
         return days;
     }
 
-    public static String getTimeByYearAndMonth(int year, int month, int day){
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.YEAR, year);
-        cal.set(Calendar.MONTH, month - 1);
-        cal.set(Calendar.DAY_OF_MONTH,day);
-        Date date = new Date(cal.getTimeInMillis());
-        String format = null;
-        try {
-             format = sdf.format(date);
-        } catch (Exception e) {
-            LOGGER.error("getTimeByYearAndMonth failed. ");
-        }
-        return format;
-    }
-
-    public static void main(String[] args) {
-        System.out.println(getThisMonthDays());
-    }
 }

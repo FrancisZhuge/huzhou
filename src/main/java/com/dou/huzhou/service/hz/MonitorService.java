@@ -55,11 +55,11 @@ public interface MonitorService {
 
     /**
      * 根据time和company_id来获取公司的能耗百分比图。
-     * @param time 直接使用数字即可，表示日期，比如1号使用1,2号使用2
+     * @param day 直接使用数字即可，表示日期，比如1号使用1,2号使用2
      * @param companyId
      * @return
      */
-    List<PowerAndWaterVo> getPowerAndWaterValueByPercentage(Integer time, Long companyId);
+    List<PowerAndWaterVo> getPowerAndWaterByPercentage(Integer day, Long companyId);
 
     /**
      * 根据year month 和companyId来获取公司的峰谷能耗

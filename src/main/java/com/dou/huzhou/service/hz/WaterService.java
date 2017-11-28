@@ -49,27 +49,26 @@ public interface WaterService {
     double getWaterLastOneYesterday(Long waterId);
 
     /**
-     * 当月每天的水表读数
+     * 根据水表的主键来获取当月的每天的数值(每个时间段内最后的值作为这个时间段的结束)
      * @param waterId
      * @return
      */
     List<WaterDo> getWaterPerDay(Long waterId);
 
     /**
-     * 当天时间water读数
-     * 0点读数就是    0点过去的第一个值
-     * @param time  日期 整数就行 1号time=1 2号time=2
+     * 返回主键为{id}鼠标在本年本月第（day）日的百分比能耗
+     * @param day  日期 整数就行 1号time=1 2号time=2
      * @param waterId 水表id
      * @return
      */
-    List<WaterDo> getWaterByPercentage(int time, Long waterId);
+    List<WaterDo> getWaterByPercentage(int day, Long waterId);
 
     /**
-     * 查找当前天后一天的第一条读数
-     * 0点读数就是    0点过去的第一个值
-     * @param time  日期 整数就行 1号time=1 2号time=2
-     * @param waterId 水表id
+     * 返回主键为{id}水表表在第（day）日的前一天最后一条数据的值
+     * @param day
+     * @param waterId
      * @return
      */
-    double getTomorrowFirstValue(int time, Long waterId);
+    Double getWaterLastOneYesterday(int day, Long waterId);
+
 }

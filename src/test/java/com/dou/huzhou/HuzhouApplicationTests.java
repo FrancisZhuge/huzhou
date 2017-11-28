@@ -58,9 +58,9 @@ public class HuzhouApplicationTests {
 	public void contextLoads() {
 
 
-		List<PowerAndWaterVo> powerAndWaterPerHour = monitorService.getPowerAndWaterPerDay(38L);
-		for(PowerAndWaterVo powerAndWaterVo:powerAndWaterPerHour){
-			System.out.println(powerAndWaterVo);
+		List<PeakAndVallyVo> peakAndVallyVos = monitorService.getPeakAndVally(2017, 10, 1L);
+		for(PeakAndVallyVo peakAndVallyVo:peakAndVallyVos){
+			System.out.println(peakAndVallyVo);
 		}
 	}
 }

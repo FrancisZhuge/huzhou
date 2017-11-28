@@ -182,61 +182,6 @@ public class MonitorServiceImpl implements MonitorService{
         return waterValue;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     @Override
     public List<PowerAndWaterVo> getPowerAndWaterPerDay(Long companyId) {
         double[] waterValuePerDay = getWaterPerDay(companyId);
@@ -288,7 +233,7 @@ public class MonitorServiceImpl implements MonitorService{
         return waterValue;
     }
     /**
-     * 根据{companyId}来获取公司当月的每日用电情况（每天第一条数据为准）
+     * 根据{companyId}来获取公司当月的每日用电情况（每天最后一条数据为准）
      * @param companyId
      * @return
      */
@@ -322,36 +267,14 @@ public class MonitorServiceImpl implements MonitorService{
         return powerValue;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     @Override
-    public List<PowerAndWaterVo> getPowerAndWaterValueByPercentage(Integer time, Long companyId) {
-        double[] waterValueByPercentage = getWaterValueByPercentage(time, companyId);
-        double[] powerValueByPercentage = getPowerValueByPercentage(time, companyId);
+    public List<PowerAndWaterVo> getPowerAndWaterByPercentage(Integer day, Long companyId) {
+        double[] waterValueByPercentage = getWaterValueByPercentage(day, companyId);
+        double[] powerValueByPercentage = getPowerValueByPercentage(day, companyId);
         List<PowerAndWaterVo> powerAndWaterVos = new ArrayList<>();
         for(int i=0;i<24;i++){
             PowerAndWaterVo powerAndWaterVo = new PowerAndWaterVo();
-            powerAndWaterVo.setTime(TimeUtil.getTimeByDayAndHour(time,i+1));
+            powerAndWaterVo.setTime(TimeUtil.getTimeByDayAndHour(day,i+1));
             powerAndWaterVo.setWaterValue(waterValueByPercentage[i]);
             powerAndWaterVo.setPowerValue(powerValueByPercentage[i]);
             powerAndWaterVos.add(powerAndWaterVo);
@@ -359,45 +282,26 @@ public class MonitorServiceImpl implements MonitorService{
         return powerAndWaterVos;
     }
 
-    @Override
-    public List<PeakAndVallyVo> getPeakAndVally(Integer year, Integer month, Long companyId) {
-        double[][] peakAndVallyValue = getPeakAndVallyValue(year, month, companyId);
-        List<PeakAndVallyVo> peakAndVallyVos = new ArrayList<>();
-        for(int i=0;i<TimeUtil.getDaysByYearAndMonth(year,month);i++){
-            PeakAndVallyVo peakAndVallyVo = new PeakAndVallyVo();
-            peakAndVallyVo.setTime(TimeUtil.getTimeByYearAndMonth(year,month,i+1));
-            peakAndVallyVo.setTip(peakAndVallyValue[0][i]);
-            peakAndVallyVo.setPeak(peakAndVallyValue[1][i]);
-            peakAndVallyVo.setVally(peakAndVallyValue[2][i]);
-            peakAndVallyVos.add(peakAndVallyVo);
-        }
-        return peakAndVallyVos;
-    }
-
-
     /**
-     * 百分比的用水量
-     * @param time
+     * 根据time和company_id来获取公司的能耗百分比图。
+     * @param day
      * @param companyId
      * @return
      */
-    private double[] getWaterValueByPercentage(Integer time, Long companyId){
+    private double[] getWaterValueByPercentage(Integer day, Long companyId){
         double[] temp = new double[25];
         double[] waterValue = new double[24];
         Long[] waterIds = waterService.getWaterIds(companyId);
         for(int i=0;i<waterIds.length;i++){
             double[] before = new double[25];
-            List<WaterDo> waterDos = waterService.getWaterByPercentage(time, waterIds[i]);
+            List<WaterDo> waterDos = waterService.getWaterByPercentage(day, waterIds[i]);
             //规整
             for(WaterDo waterDo:waterDos){
-                before[waterDo.getTime()] = waterDo.getWaterValue();
+                before[waterDo.getTime()+1] = waterDo.getWaterValue();
             }
-            //更新第25个值
-            if(TimeUtil.isToday(time)){
-                //什么都不做
-            }else {
-                before[24] = waterService.getTomorrowFirstValue(time,waterIds[i]);
-            }
+            //更新第0个值
+            Double waterLastOneYesterday = waterService.getWaterLastOneYesterday(day, waterIds[i]);
+            before[0] = waterLastOneYesterday;
             for(int j=1;j<25;j++){
                 if(before[j]==0D&&before[j-1]!=0D){
                     before[j]=before[j-1];
@@ -415,8 +319,56 @@ public class MonitorServiceImpl implements MonitorService{
     }
 
 
+    /**
+     * 根据time和company_id来获取公司的能耗百分比图。
+     * @param day
+     * @param companyId
+     * @return
+     */
+    private double[] getPowerValueByPercentage(Integer day, Long companyId){
+        double[] temp = new double[25];
+        double[] powerValue = new double[24];
+        Long[] powerIds = powerService.getPowerIds(companyId);
+        for(int i=0;i<powerIds.length;i++){
+            double[] before = new double[25];
+            List<PowerDo> powerDos = powerService.getPowerByPercentage(day, powerIds[i]);
+            //规整
+            for(PowerDo powerDo:powerDos){
+                before[powerDo.getTime()] = powerDo.getPowerValue();
+            }
+            //更新第0个值
+            Double powerLastOneYesterday = powerService.getPowerLastOneYesterday(day, powerIds[i]);
+            before[0] = powerLastOneYesterday;
+            for(int j=1;j<25;j++){
+                if(before[j]==0D&&before[j-1]!=0D){
+                    before[j]=before[j-1];
+                }
+            }
+            for(int j=0;j<25;j++){
+                temp[j] = temp[j]+before[j];
+            }
+        }
+        //相减
+        for(int i=0;i<24;i++){
+            powerValue[i] = temp[i+1]-temp[i];
+        }
+        return powerValue;
+    }
 
-
+    @Override
+    public List<PeakAndVallyVo> getPeakAndVally(Integer year, Integer month, Long companyId) {
+        double[][] peakAndVallyValue = getPeakAndVallyValue(year, month, companyId);
+        List<PeakAndVallyVo> peakAndVallyVos = new ArrayList<>();
+        for(int i=0;i<TimeUtil.getDaysByYearAndMonth(year,month);i++){
+            PeakAndVallyVo peakAndVallyVo = new PeakAndVallyVo();
+            peakAndVallyVo.setTime(TimeUtil.getTimeByYearAndMonth(year,month,i+1));
+            peakAndVallyVo.setTip(peakAndVallyValue[0][i]);
+            peakAndVallyVo.setPeak(peakAndVallyValue[1][i]);
+            peakAndVallyVo.setVally(peakAndVallyValue[2][i]);
+            peakAndVallyVos.add(peakAndVallyVo);
+        }
+        return peakAndVallyVos;
+    }
 
     /**
      * 根据{year} {month} {companyId}获取该公司的峰谷消耗情况
@@ -436,19 +388,15 @@ public class MonitorServiceImpl implements MonitorService{
             List<PeakAndVallyDo> peakAndVallyDos = powerService.getPeakAndVally(year, month, powerIds[i]);
             //规整
             for(PeakAndVallyDo peakAndVallyDo:peakAndVallyDos){
-                before[0][peakAndVallyDo.getTime()-1] = peakAndVallyDo.getTip();//尖
-                before[1][peakAndVallyDo.getTime()-1] = peakAndVallyDo.getPeak();//峰
-                before[2][peakAndVallyDo.getTime()-1] = peakAndVallyDo.getVally();//谷
+                before[0][peakAndVallyDo.getTime()] = peakAndVallyDo.getTip();//尖
+                before[1][peakAndVallyDo.getTime()] = peakAndVallyDo.getPeak();//峰
+                before[2][peakAndVallyDo.getTime()] = peakAndVallyDo.getVally();//谷
             }
-            //更新days+1个值
-            if(TimeUtil.isThisMonth(year,month)){
-                //什么都不做
-            }else {
-                PeakAndVallyDo nextMonthPeakAndVally = powerService.getNextMonthPeakAndVally(year, month, powerIds[i]);
-                before[0][days] = nextMonthPeakAndVally.getTip();//尖
-                before[1][days] = nextMonthPeakAndVally.getPeak();//峰
-                before[2][days] = nextMonthPeakAndVally.getVally();//谷
-            }
+            //更新0个值
+            PeakAndVallyDo lastMonthPeakAndVally = powerService.getLastMonthPeakAndVally(year, month, powerIds[i]);
+            before[0][0] = lastMonthPeakAndVally.getTip();//尖
+            before[1][0] = lastMonthPeakAndVally.getPeak();//峰
+            before[2][0] = lastMonthPeakAndVally.getVally();//谷
             for (int s=0;s<3;s++){
                 for(int t=1;t<days+1;t++){
                     if (before[s][t]==0D&&before[s][t-1]!=0){
@@ -475,44 +423,7 @@ public class MonitorServiceImpl implements MonitorService{
 
 
 
-    /**
-     * 百分比的用电量
-     * @param time
-     * @param companyId
-     * @return
-     */
-    private double[] getPowerValueByPercentage(Integer time, Long companyId){
-        double[] temp = new double[25];
-        double[] powerValue = new double[24];
-        Long[] powerIds = powerService.getPowerIds(companyId);
-        for(int i=0;i<powerIds.length;i++){
-            double[] before = new double[25];
-            List<PowerDo> powerDos = powerService.getPowerByPercentage(time, powerIds[i]);
-            //规整
-            for(PowerDo powerDo:powerDos){
-                before[powerDo.getTime()] = powerDo.getPowerValue();
-            }
-            //更新第25个值
-            if(TimeUtil.isToday(time)){
-                //什么都不做
-            }else {
-                before[24] = powerService.getTomorrowFirstValue(time,powerIds[i]);
-            }
-            for(int j=1;j<25;j++){
-                if(before[j]==0D&&before[j-1]!=0D){
-                    before[j]=before[j-1];
-                }
-            }
-            for(int j=0;j<25;j++){
-                temp[j] = temp[j]+before[j];
-            }
-        }
-        //相减
-        for(int i=0;i<24;i++){
-            powerValue[i] = temp[i+1]-temp[i];
-        }
-        return powerValue;
-    }
+
 
 
 

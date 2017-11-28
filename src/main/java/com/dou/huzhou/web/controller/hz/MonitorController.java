@@ -100,29 +100,28 @@ public class MonitorController {
     }
 
     /**
-     * 当月分时能耗
+     * 返回主键为{id}公司在本年本月（day）日的百分比能耗
      * @param id  公司id
-     * @param time  选定日期，只用传递日即可，比如1号传递1,2号传递2
+     * @param day  选定日期，只用传递日即可，比如1号传递1,2号传递2
      * @return
      */
-    //todo：可以将日期修改的更加完美些
 
     @RequestMapping("/percentage")
     @ResponseBody
     public String percentage(@RequestParam(value = "id", required = false) Long id,
-                             @RequestParam(value = "time",required = false) Integer time){
+                             @RequestParam(value = "day",required = false) Integer day){
         //参数错误
         if (id == null||id ==0L){
             LOGGER.error("missing params. companyId = null");
             return ResponseUtil.responseIllegalArgus();
         }
-        if (time == null||time<1||time>31){
-            LOGGER.error("params over range. 1<day<=31, but day={}",time);
+        if (day == null||day<1||day>31){
+            LOGGER.error("params over range. 1<day<=31, but day={}",day);
             return ResponseUtil.responseIllegalArgus();
         }
         List<PowerAndWaterVo> powerAndWaterVos = null;
         try {
-            powerAndWaterVos = monitorService.getPowerAndWaterValueByPercentage(time,id);
+            powerAndWaterVos = monitorService.getPowerAndWaterByPercentage(day,id);
         }catch (Exception e) {
             LOGGER.error("percentage failed. ");
             return ResponseUtil.responmseServerError();

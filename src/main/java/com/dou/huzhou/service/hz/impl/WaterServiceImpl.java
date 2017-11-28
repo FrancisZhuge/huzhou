@@ -3,6 +3,7 @@ package com.dou.huzhou.service.hz.impl;
 import com.dou.huzhou.dao.hz.WaterDao;
 import com.dou.huzhou.domain.hz.WaterDo;
 import com.dou.huzhou.service.hz.WaterService;
+import com.dou.huzhou.utils.hz.TimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,10 +99,10 @@ public class WaterServiceImpl implements WaterService{
     }
 
     @Override
-    public List<WaterDo> getWaterByPercentage(int time, Long waterId) {
+    public List<WaterDo> getWaterByPercentage(int day, Long waterId) {
         List<WaterDo> waterDos = null;
         try {
-            waterDos = waterDao.getWaterByPercentage(time,waterId);
+            waterDos = waterDao.getWaterByPercentage(day,waterId);
         } catch (Exception e) {
             LOGGER.error("getWaterByPercentage failed.");
         }
@@ -109,12 +110,16 @@ public class WaterServiceImpl implements WaterService{
     }
 
     @Override
-    public double getTomorrowFirstValue(int time, Long waterId) {
+    public Double getWaterLastOneYesterday(int day, Long waterId) {
         Double value = null;
+        String time = TimeUtil.getTimeByDay(day);
         try {
-            value = waterDao.getTomorrowFirstValue(time,waterId);
+            value = waterDao.getWaterLastOneYesterdayByDay(time,waterId);
         } catch (Exception e) {
-            LOGGER.error("getTomorrowFirstValue failed.");
+            LOGGER.error("getWaterLastOneYesterday failed.");
+        }
+        if (value==null){
+            return 0D;
         }
         return value;
     }

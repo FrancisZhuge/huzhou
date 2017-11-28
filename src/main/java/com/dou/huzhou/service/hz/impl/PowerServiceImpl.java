@@ -4,6 +4,7 @@ import com.dou.huzhou.dao.hz.PowerDao;
 import com.dou.huzhou.domain.hz.PeakAndVallyDo;
 import com.dou.huzhou.domain.hz.PowerDo;
 import com.dou.huzhou.service.hz.PowerService;
+import com.dou.huzhou.utils.hz.TimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,10 +101,10 @@ public class PowerServiceImpl implements PowerService{
     }
 
     @Override
-    public List<PowerDo> getPowerByPercentage(int time, Long powerId) {
+    public List<PowerDo> getPowerByPercentage(int day, Long powerId) {
         List<PowerDo> powerDos = null;
         try {
-            powerDos = powerDao.getPowerByPercentage(time,powerId);
+            powerDos = powerDao.getPowerByPercentage(day,powerId);
         } catch (Exception e) {
             LOGGER.error("getPowerByPercentage failed.");
         }
@@ -111,12 +112,16 @@ public class PowerServiceImpl implements PowerService{
     }
 
     @Override
-    public double getTomorrowFirstValue(int time, Long powerId) {
+    public Double getPowerLastOneYesterday(int day, Long powerId) {
         Double value = null;
+        String time = TimeUtil.getTimeByDay(day);
         try {
-            value = powerDao.getTomorrowFirstValue(time,powerId);
+            value = powerDao.getWaterLastOneYesterdayByDay(time,powerId);
         } catch (Exception e) {
-            LOGGER.error("getTomorrowFirstValue failed.");
+            LOGGER.error("getPowerLastOneYesterday failed.");
+        }
+        if (value==null){
+            return 0D;
         }
         return value;
     }
@@ -133,12 +138,18 @@ public class PowerServiceImpl implements PowerService{
     }
 
     @Override
-    public PeakAndVallyDo getNextMonthPeakAndVally(int year, int month, Long powerId) {
+    public PeakAndVallyDo getLastMonthPeakAndVally(int year, int month, Long powerId) {
         PeakAndVallyDo peakAndVallyDo = null;
         try {
-            peakAndVallyDo = powerDao.getNextMonthPeakAndVally(year,month,powerId);
+            peakAndVallyDo = powerDao.getLastMonthPeakAndVally(year,month,powerId);
         } catch (Exception e) {
-            LOGGER.error("getNextMonthPeakAndVally failed.");
+            LOGGER.error("getLastMonthPeakAndVally failed.");
+        }
+        if (peakAndVallyDo == null){
+            peakAndVallyDo = new PeakAndVallyDo();
+            peakAndVallyDo.setTip(0D);
+            peakAndVallyDo.setPeak(0D);
+            peakAndVallyDo.setVally(0D);
         }
         return peakAndVallyDo;
     }
