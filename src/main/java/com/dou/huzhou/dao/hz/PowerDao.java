@@ -1,5 +1,6 @@
 package com.dou.huzhou.dao.hz;
 
+import com.dou.huzhou.domain.hz.PeakAndVallyDo;
 import com.dou.huzhou.domain.hz.PowerDo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -18,6 +19,11 @@ import java.util.List;
 public interface PowerDao {
     String TABLE_POWER_INFO = "power_info";
     String TABLE_POWER_METER_RECORD = "power_meter_record";
+
+    String TIP = "by_kwhj";
+    String PEAK = "by_kwhf";
+    String VALLY = "by_kwhg";
+
     /**
      * 返回指定公司所有电表的主键
      * @param companyId
@@ -80,4 +86,71 @@ public interface PowerDao {
      */
     @Select({" SELECT pmr.epp FROM ", TABLE_POWER_INFO ," pi, ", TABLE_POWER_METER_RECORD ," pmr WHERE pi.id = #{powerId} AND pi.id=pmr.power_info_id AND DAY(pmr.read_time)=#{time}+1 ORDER BY pmr.read_time ASC LIMIT 0,1 "})
     double getTomorrowFirstValue(@Param("time") int time, @Param("powerId") Long powerId);
+
+    /**
+     * 根据year month 和powerId来获取某个电表的峰谷能耗
+     * @param year 年份，2016 表示2016年
+     * @param month 月份，9 表示9月
+     * @param powerId 电表的主键
+     * @return
+     */
+    @Select({"  " +
+            "SELECT\n" +
+            "  day(pmr.read_time) as time,\n" +
+            "  min(pmr. ", TIP ," ) as tip,\n" +
+            "  min(pmr. ", PEAK ," ) as peak,\n" +
+            "  min(pmr. ", VALLY ," ) as vally\n" +
+            "FROM\n" +
+            "  ",TABLE_POWER_INFO," pi,\n" +
+            "  ",TABLE_POWER_METER_RECORD," pmr\n" +
+            "WHERE\n" +
+            "  pi.id = #{powerId}\n" +
+            "AND\n" +
+            "  pi.id=pmr.power_info_id\n" +
+            "AND\n" +
+            "  YEAR(pmr.read_time)=#{year}\n" +
+            "AND\n" +
+            "  MONTH(pmr.read_time)=#{month}\n" +
+            "GROUP BY\n" +
+            "  time;" +
+            ""})
+    List<PeakAndVallyDo> getPeakAndVally(
+            @Param("year") int year,
+            @Param("month") int month,
+            @Param("powerId") Long powerId
+                                         );
+
+    /**
+     * 根据year month 和powerId来获取某个电表下个月第一条的峰谷能耗数据
+     * @param year 年份，2016 表示2016年
+     * @param month 月份，9 表示9月
+     * @param powerId 电表的主键
+     * @return
+     */
+    @Select({"" +
+            "SELECT\n" +
+            "  min(pmr. ", TIP ," ) as tip,\n" +
+            "  min(pmr. ", PEAK ," ) as peak,\n" +
+            "  min(pmr. ", VALLY ," ) as vally\n" +
+            "FROM\n" +
+            "  ",TABLE_POWER_INFO," pi,\n" +
+            "  ",TABLE_POWER_METER_RECORD," pmr\n" +
+            "WHERE\n" +
+            "  pi.id = #{powerId}\n" +
+            "AND\n" +
+            "  pi.id=pmr.power_info_id\n" +
+            "AND\n" +
+            "  YEAR(pmr.read_time)=#{year}\n" +
+            "AND\n" +
+            "  MONTH(pmr.read_time)=#{month}+1\n" +
+            "ORDER BY\n" +
+            "  pmr.read_time\n" +
+            "LIMIT\n" +
+            "  0,1;" +
+            ""})
+    PeakAndVallyDo getNextMonthPeakAndVally(
+            @Param("year") int year,
+            @Param("month") int month,
+            @Param("powerId") Long powerId
+    );
 }

@@ -1,6 +1,7 @@
 package com.dou.huzhou.service.hz.impl;
 
 import com.dou.huzhou.dao.hz.PowerDao;
+import com.dou.huzhou.domain.hz.PeakAndVallyDo;
 import com.dou.huzhou.domain.hz.PowerDo;
 import com.dou.huzhou.service.hz.PowerService;
 import org.slf4j.Logger;
@@ -102,5 +103,27 @@ public class PowerServiceImpl implements PowerService{
             LOGGER.error("getTomorrowFirstValue failed.");
         }
         return value;
+    }
+
+    @Override
+    public List<PeakAndVallyDo> getPeakAndVally(int year, int month, Long powerId) {
+        List<PeakAndVallyDo> peakAndVallyDos = null;
+        try {
+            peakAndVallyDos = powerDao.getPeakAndVally(year,month,powerId);
+        } catch (Exception e) {
+            LOGGER.error("getPeakAndVally failed.");
+        }
+        return peakAndVallyDos;
+    }
+
+    @Override
+    public PeakAndVallyDo getNextMonthPeakAndVally(int year, int month, Long powerId) {
+        PeakAndVallyDo peakAndVallyDo = null;
+        try {
+            peakAndVallyDo = powerDao.getNextMonthPeakAndVally(year,month,powerId);
+        } catch (Exception e) {
+            LOGGER.error("getNextMonthPeakAndVally failed.");
+        }
+        return peakAndVallyDo;
     }
 }

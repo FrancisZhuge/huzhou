@@ -1,8 +1,10 @@
 package com.dou.huzhou.web.controller.hz;
 
 import com.dou.huzhou.domain.hz.BuildingCompanyVo;
+import com.dou.huzhou.domain.hz.PeakAndVallyVo;
 import com.dou.huzhou.domain.hz.PowerAndWaterVo;
 import com.dou.huzhou.service.hz.MonitorService;
+import com.dou.huzhou.utils.hz.TimeUtil;
 import com.dou.huzhou.web.response.ResponseUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -61,6 +63,7 @@ public class MonitorController {
     public String getPowerAndWaterPerHour(@RequestParam(value = "id", required = false) Long id){
         //参数错误
         if (id == null||id ==0L){
+            LOGGER.error("missing params. companyId = null");
             return ResponseUtil.responseIllegalArgus();
         }
         List<PowerAndWaterVo> powerAndWaterVos = null;
@@ -83,6 +86,7 @@ public class MonitorController {
     public String calendar(@RequestParam(value = "id", required = false) Long id){
         //参数错误
         if (id == null||id ==0L){
+            LOGGER.error("missing params. companyId = null");
             return ResponseUtil.responseIllegalArgus();
         }
         List<PowerAndWaterVo> powerAndWaterVos = null;
@@ -96,20 +100,24 @@ public class MonitorController {
     }
 
     /**
-     * 分时能耗
+     * 当月分时能耗
      * @param id  公司id
      * @param time  选定日期，只用传递日即可，比如1号传递1,2号传递2
      * @return
      */
+    //todo：可以将日期修改的更加完美些
+
     @RequestMapping("/percentage")
     @ResponseBody
     public String percentage(@RequestParam(value = "id", required = false) Long id,
                              @RequestParam(value = "time",required = false) Integer time){
         //参数错误
         if (id == null||id ==0L){
+            LOGGER.error("missing params. companyId = null");
             return ResponseUtil.responseIllegalArgus();
         }
         if (time == null||time<1||time>31){
+            LOGGER.error("params over range. 1<day<=31, but day={}",time);
             return ResponseUtil.responseIllegalArgus();
         }
         List<PowerAndWaterVo> powerAndWaterVos = null;
@@ -120,5 +128,54 @@ public class MonitorController {
             return ResponseUtil.responmseServerError();
         }
         return ResponseUtil.responseOkWithData(powerAndWaterVos);
+    }
+
+    /**
+     *
+     * @param year 年，输入样式 2017
+     * @param month 月，输入样式 12
+     * @param id 企业id
+     * @return
+     */
+    @RequestMapping("/peakAndVally")
+    @ResponseBody
+    public String peakAndVally(@RequestParam(value = "year",required = false) Integer year,
+                               @RequestParam(value = "month",required = false) Integer month,
+                               @RequestParam(value = "id",required = false) Long id ){
+        //参数错误
+        if(month!=null&&month!=0){
+            if(month>12||month<1){
+                LOGGER.error("params over range. 1<=month<=12, but month = {}",month);
+                return ResponseUtil.responseIllegalArgus();
+            }
+        }
+        if(year!=0&&year!=null){
+            if(year<0||year> TimeUtil.getCurrentYear()){
+                LOGGER.error("params over range. 1<=year<={}, but year = {}",TimeUtil.getCurrentYear(),year);
+                return ResponseUtil.responseIllegalArgus();
+            }
+        }
+        if (id == null||id ==0L){
+            LOGGER.error("missing params. companyId = null");
+            return ResponseUtil.responseIllegalArgus();
+        }
+        //默认当月
+        if(month == null || month==0){
+            month = TimeUtil.getCurrentMonth();
+        }
+        //默认当年
+        if(year == null || year==0){
+            year = TimeUtil.getCurrentYear();
+        }
+
+        List<PeakAndVallyVo> peakAndVallyVos = null;
+        try {
+            peakAndVallyVos = monitorService.getPeakAndVally(year,month,id);
+        }catch (Exception e) {
+            LOGGER.error("peakAndVally failed. ");
+            return ResponseUtil.responmseServerError();
+        }
+        return ResponseUtil.responseOkWithData(peakAndVallyVos);
+
     }
 }

@@ -2,6 +2,7 @@ package com.dou.huzhou;
 
 import com.dou.huzhou.dao.hz.MapDao;
 import com.dou.huzhou.dao.hz.MonitorDao;
+import com.dou.huzhou.dao.hz.PowerDao;
 import com.dou.huzhou.dao.hz.WaterDao;
 import com.dou.huzhou.domain.Role;
 import com.dou.huzhou.domain.UserInfo;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -49,8 +51,14 @@ public class HuzhouApplicationTests {
 
 	@Autowired
 	private WaterService waterService;
+
+	@Autowired
+	private PowerDao powerDao;
 	@Test
 	public void contextLoads() {
-		monitorService.getPowerAndWaterValueByPercentage(26, 35L);
+		List<PeakAndVallyVo> peakAndVally = monitorService.getPeakAndVally(2017, 10, 1L);
+		for(PeakAndVallyVo peakAndVallyVo:peakAndVally){
+			System.out.println(peakAndVallyVo);
+		}
 	}
 }

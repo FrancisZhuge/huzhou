@@ -86,17 +86,34 @@ public class TimeUtil {
 
     /**
      * 判断输入的整数是否是今天的日期
-     * @param time
+     * @param day
      * @return
      */
-    public static boolean isToday(int time){
+    public static boolean isToday(int day){
         Calendar cal = Calendar.getInstance();
         int today = cal.get(Calendar.DAY_OF_MONTH);
-        if (today == time)
+        if (today == day)
             return true;
         else
             return false;
     }
+
+    /**
+     * 判断{year}.{month}是否是当前年的当前月
+     * @param year
+     * @param month
+     * @return
+     */
+    public static boolean isThisMonth(int year, int month){
+        Calendar cal = Calendar.getInstance();
+        int thisYear = cal.get(Calendar.YEAR);
+        int thisMonth = cal.get(Calendar.MONTH)+1;
+        if(thisYear == year&&thisMonth==month){
+            return true;
+        }
+        return false;
+    }
+
 
     /**
      * 返回当月指定日期的指定时间的整点时间
@@ -121,8 +138,60 @@ public class TimeUtil {
         }
         return format;
     }
+
+    /**
+     * 获取今年是几几年
+     * @return
+     */
+    public static int getCurrentYear(){
+        Calendar cal = Calendar.getInstance();
+        int year = cal.get(Calendar.YEAR);
+        return year;
+    }
+
+    /**
+     * 获取今年今月是几月
+     * @return
+     */
+    public static int getCurrentMonth(){
+        Calendar cal = Calendar.getInstance();
+        int month = cal.get(Calendar.MONTH)+1;
+        return month;
+    }
+
+    /**
+     * 获取year年，month月对应月份的天数
+     * @param year
+     * @param month
+     * @return
+     */
+    public static int getDaysByYearAndMonth(int year, int month){
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, year);
+        cal.set(Calendar.MONTH, month - 1);
+        cal.set(Calendar.DATE, 1);
+        cal.roll(Calendar.DATE, -1);
+        int days = cal.get(Calendar.DATE);
+        return days;
+    }
+
+    public static String getTimeByYearAndMonth(int year, int month, int day){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, year);
+        cal.set(Calendar.MONTH, month - 1);
+        cal.set(Calendar.DAY_OF_MONTH,day);
+        Date date = new Date(cal.getTimeInMillis());
+        String format = null;
+        try {
+             format = sdf.format(date);
+        } catch (Exception e) {
+            LOGGER.error("getTimeByYearAndMonth failed. ");
+        }
+        return format;
+    }
+
     public static void main(String[] args) {
-        String timeByDayAndHour = getTimeByDayAndHour(24, 1);
-        System.out.println(timeByDayAndHour);
+        isThisMonth(2017,11);
     }
 }

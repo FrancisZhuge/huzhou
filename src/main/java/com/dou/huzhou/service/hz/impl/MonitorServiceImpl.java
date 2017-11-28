@@ -143,6 +143,22 @@ public class MonitorServiceImpl implements MonitorService{
         return powerAndWaterVos;
     }
 
+    @Override
+    public List<PeakAndVallyVo> getPeakAndVally(Integer year, Integer month, Long companyId) {
+        double[][] peakAndVallyValue = getPeakAndVallyValue(year, month, companyId);
+        List<PeakAndVallyVo> peakAndVallyVos = new ArrayList<>();
+        for(int i=0;i<TimeUtil.getDaysByYearAndMonth(year,month);i++){
+            PeakAndVallyVo peakAndVallyVo = new PeakAndVallyVo();
+            peakAndVallyVo.setTime(TimeUtil.getTimeByYearAndMonth(year,month,i+1));
+            peakAndVallyVo.setTip(peakAndVallyValue[0][i]);
+            peakAndVallyVo.setPeak(peakAndVallyValue[1][i]);
+            peakAndVallyVo.setVally(peakAndVallyValue[2][i]);
+            peakAndVallyVos.add(peakAndVallyVo);
+        }
+        return peakAndVallyVos;
+    }
+
+
     /**
      * 百分比的用水量
      * @param time
@@ -251,6 +267,63 @@ public class MonitorServiceImpl implements MonitorService{
         }
         return waterValue;
     }
+
+    /**
+     * 根据{year} {month} {companyId}获取该公司的峰谷消耗情况
+     * @param year
+     * @param month
+     * @param companyId
+     * @return
+     */
+    private double[][] getPeakAndVallyValue(Integer year, Integer month, Long companyId) {
+        //获取当月有多少天
+        int days = TimeUtil.getDaysByYearAndMonth(year, month);
+        double[][] temp = new double[3][days+1];
+        double[][] powerValue = new double[3][days];
+        Long[] powerIds = powerService.getPowerIds(companyId);
+        for(int i=0;i<powerIds.length;i++){
+            double[][] before = new double[3][days+1];
+            List<PeakAndVallyDo> peakAndVallyDos = powerService.getPeakAndVally(year, month, powerIds[i]);
+            //规整
+            for(PeakAndVallyDo peakAndVallyDo:peakAndVallyDos){
+                before[0][peakAndVallyDo.getTime()-1] = peakAndVallyDo.getTip();//尖
+                before[1][peakAndVallyDo.getTime()-1] = peakAndVallyDo.getPeak();//峰
+                before[2][peakAndVallyDo.getTime()-1] = peakAndVallyDo.getVally();//谷
+            }
+            //更新days+1个值
+            if(TimeUtil.isThisMonth(year,month)){
+                //什么都不做
+            }else {
+                PeakAndVallyDo nextMonthPeakAndVally = powerService.getNextMonthPeakAndVally(year, month, powerIds[i]);
+                before[0][days] = nextMonthPeakAndVally.getTip();//尖
+                before[1][days] = nextMonthPeakAndVally.getPeak();//峰
+                before[2][days] = nextMonthPeakAndVally.getVally();//谷
+            }
+            for (int s=0;s<3;s++){
+                for(int t=1;t<days+1;t++){
+                    if (before[s][t]==0D&&before[s][t-1]!=0){
+                        before[s][t]=before[s][t-1];
+                    }
+                }
+            }
+            for (int s=0;s<3;s++){
+                for(int t=0;t<days+1;t++){
+                    temp[s][t]=temp[s][t]+before[s][t];
+                }
+            }
+        }
+        //相减
+        for(int i=0;i<3;i++){
+            for(int j=0;j<days;j++){
+                powerValue[i][j]=temp[i][j+1]-temp[i][j];
+            }
+        }
+        return powerValue;
+    }
+
+
+
+
 
     /**
      * 百分比的用电量

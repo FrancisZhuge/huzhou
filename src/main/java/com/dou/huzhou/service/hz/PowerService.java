@@ -1,6 +1,7 @@
 package com.dou.huzhou.service.hz;
 
 
+import com.dou.huzhou.domain.hz.PeakAndVallyDo;
 import com.dou.huzhou.domain.hz.PowerDo;
 
 import java.util.List;
@@ -66,4 +67,22 @@ public interface PowerService {
      * @return
      */
     double getTomorrowFirstValue(int time, Long powerId);
+
+    /**
+     * 根据year month 和powerId来获取某个电表的峰谷能耗
+     * @param year 年份，2016 表示2016年
+     * @param month 月份，9 表示9月
+     * @param powerId 电表的主键
+     * @return
+     */
+    List<PeakAndVallyDo> getPeakAndVally(int year, int month, Long powerId);
+
+    /**
+     * 根据year month 和powerId来获取某个电表下个月第一条的峰谷能耗数据
+     * @param year 年份，2016 表示2016年
+     * @param month 月份，9 表示9月
+     * @param powerId 电表的主键
+     * @return
+     */
+    PeakAndVallyDo getNextMonthPeakAndVally(int year, int month, Long powerId);
 }

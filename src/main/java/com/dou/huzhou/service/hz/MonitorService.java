@@ -2,6 +2,7 @@ package com.dou.huzhou.service.hz;
 
 import com.dou.huzhou.domain.hz.BuildingCompanyVo;
 import com.dou.huzhou.domain.hz.MapVo;
+import com.dou.huzhou.domain.hz.PeakAndVallyVo;
 import com.dou.huzhou.domain.hz.PowerAndWaterVo;
 import org.apache.shiro.subject.Subject;
 
@@ -59,4 +60,13 @@ public interface MonitorService {
      * @return
      */
     List<PowerAndWaterVo> getPowerAndWaterValueByPercentage(Integer time, Long companyId);
+
+    /**
+     * 根据year month 和companyId来获取公司的峰谷能耗
+     * @param year 年份，2016 表示2016年
+     * @param month 月份，9 表示9月
+     * @param companyId 公司的主键
+     * @return
+     */
+    List<PeakAndVallyVo> getPeakAndVally(Integer year, Integer month, Long companyId);
 }

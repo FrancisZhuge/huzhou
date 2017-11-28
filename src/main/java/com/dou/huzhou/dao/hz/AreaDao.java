@@ -16,9 +16,10 @@ import org.apache.ibatis.annotations.Select;
 public interface AreaDao {
     String TABLE_AREA_INFO = "area_info";
     String SELECT_FIELDS = " id, area_no, area_name, provice_id, city_id, area_id, address, jigou ";
+
     /**
-     * 根据id查找area_no字段
-     * @param id
+     * 根据{id}查找{area_no}字段
+     * @param id area表的主键
      * @return
      */
     @Select({" select area_no from ", TABLE_AREA_INFO ," where id = #{id} "})
