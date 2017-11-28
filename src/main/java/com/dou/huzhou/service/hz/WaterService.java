@@ -20,7 +20,7 @@ public interface WaterService {
     Long[] getWaterIds( Long companyId);
 
     /**
-     * 获取指定电表的最新值
+     * 获取指定水表的最新值
      * @param id
      * @return
      *          如果本月没有读数，返回为null
@@ -35,11 +35,18 @@ public interface WaterService {
     Double getLastMonthValue(Long id);
 
     /**
-     * 根据水表的主键来获取当天的每小时数值
+     * 根据水表的主键来获取当天的每小时数值(每个时间段内最大的值作为这个时间段的结束)
      * @param waterId
      * @return
      */
     List<WaterDo> getWaterPerHour(Long waterId);
+
+    /**
+     * 获取水表表前一天最后一个读数
+     * @param waterId
+     * @return
+     */
+    double getWaterLastOneYesterday(Long waterId);
 
     /**
      * 当月每天的水表读数

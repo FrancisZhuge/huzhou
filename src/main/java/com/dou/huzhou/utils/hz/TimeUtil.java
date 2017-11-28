@@ -19,7 +19,7 @@ public class TimeUtil {
     private final static Logger LOGGER = LoggerFactory.getLogger(TimeUtil.class);
     /**
      * 将yyyyMMddhh装换为yyyy-MM-dd hh:mm:ss格式
-     * @param before
+     * @param before 转换之前的时间字符串
      * @return
      */
     public static String convertToStandard(String before){
@@ -42,33 +42,48 @@ public class TimeUtil {
      * 输入1,表示当天1点
      * @return
      */
-    public static String getTimeByHour(int i){
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public static String getTodayTimeByHour(int hour){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH");
         Calendar cal = Calendar.getInstance();
-        Date date = null;
-        cal.set(Calendar.HOUR_OF_DAY, i);
-        cal.set(Calendar.MINUTE,0);
-        cal.set(Calendar.SECOND,0);
-        date = new Date(cal.getTimeInMillis());
+        cal.set(Calendar.HOUR_OF_DAY, hour);
+        Date date = new Date(cal.getTimeInMillis());
         String format = null;
         try {
             format = sdf.format(date);
         } catch (Exception e) {
-            LOGGER.error("getTimeByHour failed. ");
+            LOGGER.error("getTodayTimeByHour failed. ");
         }
         return format;
     }
 
     /**
-     * 获取当月有多少天
+     * 获取本月有多少天
      * @return
      */
-    public static int getDayNumber(){
+    public static int getThisMonthDays(){
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
         int maximum = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
         return maximum;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public static String getTimeByDay(int i){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -192,6 +207,6 @@ public class TimeUtil {
     }
 
     public static void main(String[] args) {
-        isThisMonth(2017,11);
+        System.out.println(getThisMonthDays());
     }
 }

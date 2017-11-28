@@ -56,9 +56,11 @@ public class HuzhouApplicationTests {
 	private PowerDao powerDao;
 	@Test
 	public void contextLoads() {
-		List<PeakAndVallyVo> peakAndVally = monitorService.getPeakAndVally(2017, 10, 1L);
-		for(PeakAndVallyVo peakAndVallyVo:peakAndVally){
-			System.out.println(peakAndVallyVo);
+
+
+		List<PowerAndWaterVo> powerAndWaterPerHour = monitorService.getPowerAndWaterPerHour(36L);
+		for(PowerAndWaterVo powerAndWaterVo:powerAndWaterPerHour){
+			System.out.println(powerAndWaterVo);
 		}
 	}
 }

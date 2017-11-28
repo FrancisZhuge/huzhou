@@ -37,11 +37,18 @@ public interface PowerService {
     Double getLastMonthValue(Long id);
 
     /**
-     * 根据电表的主键来获取当天的每小时数值
+     * 根据电表的主键来获取当天的每小时数值(每个时间段内最大的值作为这个时间段的结束)
      * @param powerId
      * @return
      */
     List<PowerDo> getPowerPerHour(Long powerId);
+
+    /**
+     * 获取电表前一天最后一个读数
+     * @param powerId
+     * @return
+     */
+    double getPowerLastOneYesterday(Long powerId);
 
     /**
      * 当月每天的电表读数

@@ -73,6 +73,20 @@ public class PowerServiceImpl implements PowerService{
     }
 
     @Override
+    public double getPowerLastOneYesterday(Long powerId) {
+        Double value = null;
+        try {
+            value = powerDao.getPowerLastOneYesterday(powerId);
+        } catch (Exception e) {
+            LOGGER.error("getPowerLastOneYesterday failed.");
+        }
+        if (value == null){
+            return 0D;
+        }
+        return value;
+    }
+
+    @Override
     public List<PowerDo> getPowerPerDay(Long powerId) {
         List<PowerDo> powerDos = null;
         try {

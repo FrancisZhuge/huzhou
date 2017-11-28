@@ -70,6 +70,20 @@ public class WaterServiceImpl implements WaterService{
     }
 
     @Override
+    public double getWaterLastOneYesterday(Long waterId) {
+        Double value = null;
+        try {
+            value = waterDao.getWaterLastOneYesterday(waterId);
+        } catch (Exception e) {
+            LOGGER.error("getWaterLastOneYesterday failed.");
+        }
+        if (value==null){
+            return 0D;
+        }
+        return value;
+    }
+
+    @Override
     public List<WaterDo> getWaterPerDay(Long waterId) {
         List<WaterDo> waterDos = null;
         try {

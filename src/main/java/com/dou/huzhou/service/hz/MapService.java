@@ -15,23 +15,24 @@ import java.util.List;
 public interface MapService {
 
     /**
-     * 根据用户获得对应权限的相应数据
-     * @param user
+     * 根据相应的用户
+     * 获取该用户相应权限的{MapVo}
+     * @param user 用户
      * @return
      */
     List<MapVo> getMapInfo(Subject user);
 
     /**
-     * 根据areaId来获取整个园区的所有Map信息
-     * @param areaId
+     * 根据园区的{areaId}来获取该园区的所有{MapVo}信息
+     * @param areaId 园区的主键
      * @return
      */
     List<MapVo> getMapInfoByArea(Long areaId);
 
     /**
-     * 根据areadId和companyId来获取指定公司的Map信息
-     * @param areaId
-     * @param companyId
+     * 根据{areadId}和{companyId}来获取指定园区公司的Map信息
+     * @param areaId 园区的主键
+     * @param companyId 公司的主键
      * @return
      */
     List<MapVo> getMapInfoByCompany(Long areaId, Long companyId);

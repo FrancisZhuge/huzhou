@@ -29,11 +29,8 @@ public class MapController {
     @Autowired
     private MapService mapService;
 
-    @Autowired
-    private HostHolder hostHolder;
-
     /**
-     * 获取湖州mapInfo
+     * 获取湖州{mapInfo}信息
      * @return
      */
     @RequestMapping("/mapInfo")

@@ -26,7 +26,7 @@ public interface PowerDao {
 
     /**
      * 返回指定公司所有电表的主键
-     * @param companyId
+     * @param companyId 公司的id
      * @return
      */
     @Select({" select id from ", TABLE_POWER_INFO ," where company_id = #{companyId} "})
@@ -34,8 +34,8 @@ public interface PowerDao {
 
 
     /**
-     * 获取指定电表的最新读数
-     * @param id
+     * 获取指定电表{id}的最新读数
+     * @param id 电表的id
      * @return
      */
     @Select({" select epp from ", TABLE_POWER_METER_RECORD ," where power_info_id = #{id} order by read_time desc limit 0,1"})
@@ -43,21 +43,85 @@ public interface PowerDao {
 
     /**
      * 获取上个月最后一次记录值
-     * @param id
+     * @param id 指定电表的id
      * @return
      */
-    @Select({" SELECT pmr.epp FROM ", TABLE_POWER_INFO ," pi, ", TABLE_POWER_METER_RECORD ," pmr WHERE pi.id = #{id} AND pi.id=pmr.power_info_id AND MONTH(pmr.read_time)=MONTH(NOW())-1 ORDER BY pmr.read_time DESC LIMIT 0,1 "})
+    @Select({" " +
+            "SELECT\n" +
+            "  pmr.epp\n" +
+            "FROM\n" +
+            "  ", TABLE_POWER_INFO ," pi,\n" +
+            "  ", TABLE_POWER_METER_RECORD ," pmr\n" +
+            "WHERE\n" +
+            "  pi.id = #{id}\n" +
+            "AND\n" +
+            "  pi.id=pmr.power_info_id\n" +
+            "AND\n" +
+            "  MONTH(pmr.read_time)=MONTH(NOW())-1\n" +
+            "ORDER BY\n" +
+            "  pmr.read_time DESC \n" +
+            "LIMIT\n" +
+            "  0,1;" +
+            " "})
     Double getLastMouthValue(@Param("id") Long id);
 
     /**
-     * 每小时power读数
+     * 根据电表的主键来获取当天的每小时数值(每个时间段内最大的值作为这个时间段的结束)
+     * @param powerId 电表的主键
+     * @return
+     */
+    @Select({" " +
+            "SELECT\n" +
+            "  HOUR(pmr.read_time) as time,\n" +
+            "  MAX(pmr.epp) as power_value\n" +
+            "FROM\n" +
+            "  ", TABLE_POWER_INFO ," pi,\n" +
+            "  ", TABLE_POWER_METER_RECORD ," pmr\n" +
+            "WHERE\n" +
+            "  pi.id = #{powerId}\n" +
+            "AND\n" +
+            "  pi.id=pmr.power_info_id\n" +
+            "AND\n" +
+            "  DAY(pmr.read_time)=DAY(NOW())\n" +
+            "GROUP BY\n" +
+            "  time;" +
+            " "})
+    List<PowerDo> getPowerPerHour(@Param("powerId") Long powerId);
+
+    /**
+     * 根据电表的主键来获取昨天最后一个读数值
      * @param powerId
      * @return
      */
-    @Select({" SELECT HOUR(pmr.read_time) as time, min(pmr.epp) as power_value\n" +
-            "FROM", TABLE_POWER_INFO ," pi,", TABLE_POWER_METER_RECORD ," pmr\n" +
-            "WHERE pi.id = #{powerId} AND pi.id=pmr.power_info_id AND DAY(pmr.read_time)=DAY(NOW()) GROUP BY time "})
-    List<PowerDo> getPowerPerHour(@Param("powerId") Long powerId);
+    @Select({"" +
+            "SELECT\n" +
+            "  pmr.epp\n" +
+            "FROM\n" +
+            "  ", TABLE_POWER_INFO ," pi,\n" +
+            "  ", TABLE_POWER_METER_RECORD ," pmr\n" +
+            "WHERE\n" +
+            "  pi.id = #{powerId}\n" +
+            "AND\n" +
+            "  pi.id=pmr.power_info_id\n" +
+            "AND\n" +
+            "  DATE(pmr.read_time)=date_sub(CURDATE(),INTERVAL 1 DAY)\n" +
+            "ORDER BY\n" +
+            "  pmr.read_time DESC\n" +
+            "LIMIT\n" +
+            "  0,1;" +
+            ""})
+    Double getPowerLastOneYesterday(@Param("powerId") Long powerId);
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * 当月每天power读数

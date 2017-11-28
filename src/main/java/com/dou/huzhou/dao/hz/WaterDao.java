@@ -39,25 +39,115 @@ public interface WaterDao {
      * @param id
      * @return
      */
-    @Select({" SELECT wmr.consumption FROM ", TABLE_WATER_INFO ," wi, ", TABLE_WATER_METER_RECORD ," wmr WHERE wi.id = #{id} AND wi.id=wmr.water_info_id AND MONTH(wmr.read_time)=MONTH(NOW())-1 ORDER BY wmr.read_time DESC LIMIT 0,1 "})
+    @Select({" " +
+            "SELECT\n" +
+            "  wmr.consumption\n" +
+            "FROM\n" +
+            "  ", TABLE_WATER_INFO ," wi,\n" +
+            "  ", TABLE_WATER_METER_RECORD ," wmr\n" +
+            "WHERE\n" +
+            "  wi.id = #{id}\n" +
+            "AND\n" +
+            "  wi.id=wmr.water_info_id\n" +
+            "AND\n" +
+            "  MONTH(wmr.read_time)=MONTH(NOW())-1\n" +
+            "ORDER BY\n" +
+            "  wmr.read_time DESC\n" +
+            "LIMIT\n" +
+            "  0,1;" +
+            " "})
     Double getLastMouthValue(@Param("id") Long id);
 
     /**
-     * 当天每小时water读数
+     * 根据水表的主键来获取当天的每小时数值(每个时间段内最大的值作为这个时间段的结束)
+     * @param waterId 水表主键
+     * @return
+     */
+    @Select({" " +
+            "SELECT\n" +
+            "  HOUR(wmr.read_time) as time,\n" +
+            "  max(wmr.consumption) as water_value\n" +
+            "FROM\n" +
+            "  ", TABLE_WATER_INFO ," wi,\n" +
+            "  ", TABLE_WATER_METER_RECORD ," wmr\n" +
+            "WHERE\n" +
+            "  wi.id = #{waterId}\n" +
+            "AND\n" +
+            "  wi.id=wmr.water_info_id\n" +
+            "AND\n" +
+            "  DAY(wmr.read_time)=DAY(NOW())\n" +
+            "GROUP BY\n" +
+            "  time;" +
+            " "})
+    List<WaterDo> getWaterPerHour(@Param("waterId") Long waterId);
+
+    /**
+     * 根据水表的主键来获取昨天最后一个读数值
      * @param waterId
      * @return
      */
-    @Select({" SELECT HOUR(wmr.read_time) as time, min(wmr.consumption) as water_value\n" +
-            "FROM", TABLE_WATER_INFO ," wi,", TABLE_WATER_METER_RECORD ," wmr\n" +
-            "WHERE wi.id = #{waterId} AND wi.id=wmr.water_info_id AND DAY(wmr.read_time)=DAY(NOW()) GROUP BY time "})
-    List<WaterDo> getWaterPerHour(@Param("waterId") Long waterId);
+    @Select({"" +
+            "SELECT\n" +
+            "  wmr.consumption\n" +
+            "FROM\n" +
+            "  ", TABLE_WATER_INFO ," wi,\n" +
+            "  ", TABLE_WATER_METER_RECORD ," wmr\n" +
+            "WHERE\n" +
+            "  wi.id = #{waterId}\n" +
+            "AND\n" +
+            "  wi.id=wmr.water_info_id\n" +
+            "AND\n" +
+            "  DATE(wmr.read_time)=date_sub(CURDATE(),INTERVAL 1 DAY)\n" +
+            "ORDER BY\n" +
+            "  wmr.read_time DESC\n" +
+            "LIMIT\n" +
+            "  0,1;" +
+            ""})
+    Double getWaterLastOneYesterday(@Param("waterId") Long waterId);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * 当月每天water读数
      * @param waterId
      * @return
      */
-    @Select({" SELECT Day(wmr.read_time) as time, max(wmr.consumption) as water_value FROM ", TABLE_WATER_INFO ," wi, ", TABLE_WATER_METER_RECORD ," wmr WHERE wi.id = #{waterId} AND wi.id=wmr.water_info_id AND MONTH(wmr.read_time)=MONTH(NOW()) GROUP BY time "})
+    @Select({" " +
+            "SELECT\n" +
+            "  Day(wmr.read_time) as time,\n" +
+            "  min(wmr.consumption) as water_value\n" +
+            "FROM\n" +
+            "  ", TABLE_WATER_INFO ," wi,\n" +
+            "  ", TABLE_WATER_METER_RECORD ," wmr\n" +
+            "WHERE\n" +
+            "  wi.id = #{waterId}\n" +
+            "AND\n" +
+            "  wi.id=wmr.water_info_id\n" +
+            "AND\n" +
+            "  MONTH(wmr.read_time)=MONTH(NOW())\n" +
+            "GROUP BY\n" +
+            "  time;" +
+            " "})
     List<WaterDo> getWaterPerDay(@Param("waterId") Long waterId);
 
     /**

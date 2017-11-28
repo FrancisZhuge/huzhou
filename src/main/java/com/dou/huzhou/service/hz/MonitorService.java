@@ -18,40 +18,40 @@ import java.util.List;
 public interface MonitorService {
 
     /**
-     * 获取大楼和公司对应的名称
-     * @param user
+     * 根据{user}获取该用户对应的权限的{BuildingCompanyVo}
+     * @param user 当前用户
      * @return
      */
     List<BuildingCompanyVo> getInfo(Subject user);
 
     /**
-     * 根据areaId来获取整个园区的所有Building和Company信息
-     * @param areaId
+     * 根据{areaId}来获取整个园区的所有{BuildingCompanyVo}
+     * @param areaId 园区的主键
      * @return
      */
     List<BuildingCompanyVo> getInfoByArea(Long areaId);
 
     /**
-     * 根据areadId和companyId来获取指定公司的所有Building和Company信息
-     * @param areaId
-     * @param companyId
+     * 根据{areadId}和{companyId}来获取指定公司的所有{BuildingCompanyVo}
+     * @param areaId 园区的主键
+     * @param companyId 公司的主键
      * @return
      */
-    List<BuildingCompanyVo> getInfoByCompany(Long areaId, Long companyId);
+    List<BuildingCompanyVo> getInfoByAreaAndCompany(Long areaId, Long companyId);
 
     /**
-     * 根据company_id 来获取公司当天的用电情况（每小时，以整点右边最近的时间为整点时间）
-     * @param companyId
+     * 根据{companyId} 来获取公司当天的分时用电和用水情况（每小时，以整点右边最近的时间为整点时间）
+     * @param companyId 公司的主键
      * @return
      */
-    List<PowerAndWaterVo> getPowerAndWaterValue(Long companyId);
+    List<PowerAndWaterVo> getPowerAndWaterPerHour(Long companyId);
 
     /**
-     * 根据company_id 来获取公司当月的用电情况（每天最后一条数据为准）
+     * 根据{companyId}来获取公司当月的每日用电用水情况（每天第一条数据为准）
      * @param companyId
      * @return
      */
-    List<PowerAndWaterVo> getPowerAndWaterValuePerDay(Long companyId);
+    List<PowerAndWaterVo> getPowerAndWaterPerDay(Long companyId);
 
     /**
      * 根据time和company_id来获取公司的能耗百分比图。

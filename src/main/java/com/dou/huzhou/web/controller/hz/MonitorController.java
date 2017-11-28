@@ -68,7 +68,7 @@ public class MonitorController {
         }
         List<PowerAndWaterVo> powerAndWaterVos = null;
         try {
-            powerAndWaterVos = monitorService.getPowerAndWaterValue(id);
+            powerAndWaterVos = monitorService.getPowerAndWaterPerHour(id);
         } catch (Exception e) {
             LOGGER.error("getPowerAndWaterPerHour failed. ");
             return ResponseUtil.responmseServerError();
@@ -77,7 +77,7 @@ public class MonitorController {
     }
 
     /**
-     * 公司当月能耗
+     * 返回主键为{id}的公司当月每天的能耗
      * @param id  公司id
      * @return
      */
@@ -91,7 +91,7 @@ public class MonitorController {
         }
         List<PowerAndWaterVo> powerAndWaterVos = null;
         try {
-            powerAndWaterVos = monitorService.getPowerAndWaterValuePerDay(id);
+            powerAndWaterVos = monitorService.getPowerAndWaterPerDay(id);
         } catch (Exception e) {
             LOGGER.error("calendar failed. ");
             return ResponseUtil.responmseServerError();
