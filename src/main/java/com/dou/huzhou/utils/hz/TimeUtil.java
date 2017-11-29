@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -169,4 +170,55 @@ public class TimeUtil {
         return days;
     }
 
+    /**
+     * 获取上月最后一天
+     * @return
+     */
+    public static String getLastMonthLastDay(){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.MONTH,-1);
+        cal.set(Calendar.DAY_OF_MONTH,getDaysByYearAndMonth(cal.get(Calendar.YEAR),cal.get(Calendar.MONTH)+1));
+        String format = sdf.format(cal.getTime());
+        return format;
+    }
+
+    /**
+     * 获取一个月的第一天
+     * @param year
+     * @param month
+     * @return
+     */
+    public static String getFirstDayByYearMonthy(int year,int month){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR,year);
+        cal.set(Calendar.MONTH,month-1);
+        cal.set(Calendar.DAY_OF_MONTH,1);
+        String format = sdf.format(cal.getTime());
+        return format;
+
+    }
+    public static String[] getCurrentWeek(){
+        String[] strings = new String[8];
+        Calendar calendar = Calendar.getInstance();
+        int d = 0;
+        if (calendar.get(Calendar.DAY_OF_WEEK) == 1) {
+            d = -6;
+        } else {
+            d = 2 - calendar.get(Calendar.DAY_OF_WEEK);
+        }
+        calendar.add(Calendar.DAY_OF_WEEK, d);
+        calendar.add(Calendar.DAY_OF_WEEK,-1);
+        for(int i=0;i<8;i++){
+            strings[i] = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
+            calendar.add(Calendar.DAY_OF_WEEK,1);
+        }
+        return strings;
+    }
+
+    public static void main(String[] args) {
+        String[] currentWeek = getCurrentWeek();
+        System.out.println(Arrays.toString(currentWeek));
+    }
 }

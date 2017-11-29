@@ -50,15 +50,13 @@ public interface WaterDao {
             "AND\n" +
             "  wi.id=wmr.water_info_id\n" +
             "AND\n" +
-            "  year(wmr.read_time)=year(date_sub(CURDATE(),INTERVAL 1 MONTH))\n" +
-            "AND\n" +
-            "  month(wmr.read_time)=month(date_sub(CURDATE(),INTERVAL 1 MONTH))\n" +
+            "  Date(wmr.read_time)<=#{time}\n" +
             "ORDER BY\n" +
             "  wmr.read_time DESC\n" +
             "LIMIT \n" +
             "  0,1;" +
             ""})
-    Double getLastMouthValue(@Param("id") Long id);
+    Double getLastMouthValue(@Param("id") Long id ,@Param("time") String time);
 
     /**
      * 根据水表的主键来获取当天的每小时数值(每个时间段内最后的值作为这个时间段的结束)
@@ -99,7 +97,7 @@ public interface WaterDao {
             "AND\n" +
             "  wi.id=wmr.water_info_id\n" +
             "AND\n" +
-            "  DATE(wmr.read_time)=date_sub(CURDATE(),INTERVAL 1 DAY)\n" +
+            "  DATE(wmr.read_time)<=#{time}\n" +
             "ORDER BY\n" +
             "  wmr.read_time DESC\n" +
             "LIMIT\n" +
@@ -177,7 +175,7 @@ public interface WaterDao {
             "AND\n" +
             "  wi.id=wmr.water_info_id\n" +
             "AND\n" +
-            "  DATE (wmr.read_time) = DATE (date_sub(#{time},INTERVAL 1 DAY))\n" +
+            "  DATE (wmr.read_time) <= DATE (date_sub(#{time},INTERVAL 1 DAY))\n" +
             "ORDER BY\n" +
             "  wmr.read_time DESC\n" +
             "LIMIT\n" +

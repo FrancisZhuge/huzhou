@@ -57,15 +57,13 @@ public interface PowerDao {
             "AND\n" +
             "  pi.id=pmr.power_info_id\n" +
             "AND\n" +
-            "  year(pmr.read_time)=year(date_sub(CURDATE(),INTERVAL 1 MONTH))\n" +
-            "AND\n" +
-            "  month(pmr.read_time)=month(date_sub(CURDATE(),INTERVAL 1 MONTH))\n" +
+            "  DATE(pmr.read_time)<=#{time}\n" +
             "ORDER BY\n" +
             "  pmr.read_time DESC\n" +
             "LIMIT \n" +
             "  0,1;" +
             ""})
-    Double getLastMouthValue(@Param("id") Long id);
+    Double getLastMouthValue(@Param("id") Long id, @Param("time") String time);
 
     /**
      * 根据电表的主键来获取当天的每小时数值(每个时间段内最大的值作为这个时间段的结束)
@@ -106,7 +104,7 @@ public interface PowerDao {
             "AND\n" +
             "  pi.id=pmr.power_info_id\n" +
             "AND\n" +
-            "  DATE(pmr.read_time)=date_sub(CURDATE(),INTERVAL 1 DAY)\n" +
+            "  DATE(pmr.read_time)<=date_sub(CURDATE(),INTERVAL 1 DAY)\n" +
             "ORDER BY\n" +
             "  pmr.read_time DESC\n" +
             "LIMIT\n" +
@@ -184,39 +182,13 @@ public interface PowerDao {
             "AND\n" +
             "  pi.id=pmr.power_info_id\n" +
             "AND\n" +
-            "  DATE (pmr.read_time) = DATE (date_sub(#{time},INTERVAL 1 DAY))\n" +
+            "  DATE (pmr.read_time) <= DATE (date_sub(#{time},INTERVAL 1 DAY))\n" +
             "ORDER BY\n" +
             "  pmr.read_time DESC\n" +
             "LIMIT\n" +
             "  0,1;" +
             ""})
-    Double getWaterLastOneYesterdayByDay(@Param("time") String time,@Param("powerId") Long powerId);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    Double getPowerLastOneYesterdayByDay(@Param("time") String time,@Param("powerId") Long powerId);
 
     /**
      * 根据year month 和powerId来获取某个电表的峰谷能耗
@@ -253,8 +225,7 @@ public interface PowerDao {
 
     /**
      * 根据year month 和powerId来获取某个电表上个月最后一条的峰谷能耗数据
-     * @param year 年份，2016 表示2016年
-     * @param month 月份，9 表示9月
+     * @param time 这个月的时间，比如2017-01-01
      * @param powerId 电表的主键
      * @return
      */
@@ -271,17 +242,39 @@ public interface PowerDao {
             "  AND\n" +
             "  pi.id=pmr.power_info_id\n" +
             "  AND\n" +
-            "  YEAR(pmr.read_time)=#{year}\n" +
-            "  AND\n" +
-            "  MONTH(pmr.read_time)=#{month}-1\n" +
+            "  DATE(pmr.read_time)<#{time}\n" +
             "ORDER BY\n" +
             "  pmr.read_time DESC\n" +
             "LIMIT\n" +
             "  0,1;" +
             ""})
     PeakAndVallyDo getLastMonthPeakAndVally(
-            @Param("year") int year,
-            @Param("month") int month,
+            @Param("time") String time,
             @Param("powerId") Long powerId
     );
+
+
+    /**
+     * 根据电表的{powerId}获取这个电表指定时间之前的最后一条读数
+     * @param powerId
+     * @return
+     */
+    @Select({"" +
+            "SELECT\n" +
+            "  pmr.epp\n" +
+            "FROM\n" +
+            "  power_info pi,\n" +
+            "  power_meter_record pmr\n" +
+            "WHERE\n" +
+            "  pi.id = #{powerId}\n" +
+            "AND\n" +
+            "  pi.id=pmr.power_info_id\n" +
+            "AND\n" +
+            "  Date(pmr.read_time) <= #{time}\n" +
+            "ORDER BY\n" +
+            "  pmr.read_time DESC\n" +
+            "LIMIT\n" +
+            "  0,1;\n" +
+            ""})
+    Double getPowerLastOneAtTime(@Param("powerId") Long powerId,@Param("time") String time);
 }

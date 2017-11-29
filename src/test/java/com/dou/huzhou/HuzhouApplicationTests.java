@@ -54,13 +54,15 @@ public class HuzhouApplicationTests {
 
 	@Autowired
 	private PowerDao powerDao;
+
+	@Autowired
+	private AnalysisService analysisService;
 	@Test
 	public void contextLoads() {
 
-
-		List<PeakAndVallyVo> peakAndVallyVos = monitorService.getPeakAndVally(2017, 10, 1L);
-		for(PeakAndVallyVo peakAndVallyVo:peakAndVallyVos){
-			System.out.println(peakAndVallyVo);
+		List<PowerVo> currentWeek = analysisService.getCurrentWeek(1l);
+		for(PowerVo powerVo:currentWeek){
+			System.out.println(powerVo);
 		}
 	}
 }

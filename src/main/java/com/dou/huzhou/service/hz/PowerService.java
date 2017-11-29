@@ -90,4 +90,12 @@ public interface PowerService {
      * @return
      */
     PeakAndVallyDo getLastMonthPeakAndVally(int year, int month, Long powerId);
+
+    /**
+     * 根据电表的{powerId}获取这个电表本周的上一周最后一条读数(礼拜六的最后一条读数)
+     * @param powerId
+     * @return
+     */
+
+    Double getPowerLastOneAtTime(Long powerId,String time);
 }

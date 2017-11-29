@@ -52,7 +52,7 @@ public class WaterServiceImpl implements WaterService{
     public Double getLastMonthValue(Long id) {
         Double value = null;
         try {
-            value = waterDao.getLastMouthValue(id);
+            value = waterDao.getLastMouthValue(id,TimeUtil.getLastMonthLastDay());
         } catch (Exception e) {
             LOGGER.error("getLastMonthValue failed.");
         }

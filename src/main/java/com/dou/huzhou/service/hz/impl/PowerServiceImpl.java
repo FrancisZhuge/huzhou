@@ -55,7 +55,7 @@ public class PowerServiceImpl implements PowerService{
     public Double getLastMonthValue(Long id) {
         Double value = null;
         try {
-            value = powerDao.getLastMouthValue(id);
+            value = powerDao.getLastMouthValue(id,TimeUtil.getLastMonthLastDay());
         } catch (Exception e) {
             LOGGER.error("getLastMonthValue failed.");
         }
@@ -116,7 +116,7 @@ public class PowerServiceImpl implements PowerService{
         Double value = null;
         String time = TimeUtil.getTimeByDay(day);
         try {
-            value = powerDao.getWaterLastOneYesterdayByDay(time,powerId);
+            value = powerDao.getPowerLastOneYesterdayByDay(time,powerId);
         } catch (Exception e) {
             LOGGER.error("getPowerLastOneYesterday failed.");
         }
@@ -141,7 +141,7 @@ public class PowerServiceImpl implements PowerService{
     public PeakAndVallyDo getLastMonthPeakAndVally(int year, int month, Long powerId) {
         PeakAndVallyDo peakAndVallyDo = null;
         try {
-            peakAndVallyDo = powerDao.getLastMonthPeakAndVally(year,month,powerId);
+            peakAndVallyDo = powerDao.getLastMonthPeakAndVally(TimeUtil.getFirstDayByYearMonthy(year,month),powerId);
         } catch (Exception e) {
             LOGGER.error("getLastMonthPeakAndVally failed.");
         }
@@ -152,5 +152,18 @@ public class PowerServiceImpl implements PowerService{
             peakAndVallyDo.setVally(0D);
         }
         return peakAndVallyDo;
+    }
+
+    @Override
+    public Double getPowerLastOneAtTime(Long powerId,String time) {
+        Double value = null;
+        try {
+            value = powerDao.getPowerLastOneAtTime(powerId,time);
+        } catch (Exception e) {
+            LOGGER.error("getPowerLastOneByLastWeek failed.");
+        }
+        if(value == null)
+            value = 0D;
+        return value;
     }
 }
