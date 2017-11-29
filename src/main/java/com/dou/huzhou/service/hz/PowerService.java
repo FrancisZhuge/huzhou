@@ -3,6 +3,7 @@ package com.dou.huzhou.service.hz;
 
 import com.dou.huzhou.domain.hz.PeakAndVallyDo;
 import com.dou.huzhou.domain.hz.PowerDo;
+import com.dou.huzhou.domain.hz.PowerPeakAndVallyDo;
 
 import java.util.List;
 
@@ -92,10 +93,18 @@ public interface PowerService {
     PeakAndVallyDo getLastMonthPeakAndVally(int year, int month, Long powerId);
 
     /**
-     * 根据电表的{powerId}获取这个电表本周的上一周最后一条读数(礼拜六的最后一条读数)
+     * 根据电表的{powerId}获取这个电表指定时间之前的最后一条读数
      * @param powerId
      * @return
      */
 
     Double getPowerLastOneAtTime(Long powerId,String time);
+
+    /**
+     * 获取主键为{powerId}的电表当前时间之前的最后一条的用电情况+尖+峰+谷
+     * @param powerId
+     * @param time
+     * @return
+     */
+    PowerPeakAndVallyDo getPowerPeakAndVallyAtTime(Long powerId,String time);
 }

@@ -3,6 +3,7 @@ package com.dou.huzhou.service.hz.impl;
 import com.dou.huzhou.dao.hz.PowerDao;
 import com.dou.huzhou.domain.hz.PeakAndVallyDo;
 import com.dou.huzhou.domain.hz.PowerDo;
+import com.dou.huzhou.domain.hz.PowerPeakAndVallyDo;
 import com.dou.huzhou.service.hz.PowerService;
 import com.dou.huzhou.utils.hz.TimeUtil;
 import org.slf4j.Logger;
@@ -165,5 +166,23 @@ public class PowerServiceImpl implements PowerService{
         if(value == null)
             value = 0D;
         return value;
+    }
+
+    @Override
+    public PowerPeakAndVallyDo getPowerPeakAndVallyAtTime(Long powerId, String time) {
+        PowerPeakAndVallyDo powerPeakAndVallyDo = null;
+        try{
+            powerPeakAndVallyDo = powerDao.getPowerPeakAndVallyAtTime(powerId,time);
+        }catch (Exception e) {
+            LOGGER.error("getPowerPeakAndVallyAtTime failed.");
+        }
+        if(powerPeakAndVallyDo == null){
+            powerPeakAndVallyDo = new PowerPeakAndVallyDo();
+            powerPeakAndVallyDo.setPeak(0D);
+            powerPeakAndVallyDo.setPowerValue(0D);
+            powerPeakAndVallyDo.setTip(0D);
+            powerPeakAndVallyDo.setVally(0D);
+        }
+        return powerPeakAndVallyDo;
     }
 }

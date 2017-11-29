@@ -2,6 +2,7 @@ package com.dou.huzhou.dao.hz;
 
 import com.dou.huzhou.domain.hz.PeakAndVallyDo;
 import com.dou.huzhou.domain.hz.PowerDo;
+import com.dou.huzhou.domain.hz.PowerPeakAndVallyDo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -263,8 +264,8 @@ public interface PowerDao {
             "SELECT\n" +
             "  pmr.epp\n" +
             "FROM\n" +
-            "  power_info pi,\n" +
-            "  power_meter_record pmr\n" +
+            "  ",TABLE_POWER_INFO," pi,\n" +
+            "  ",TABLE_POWER_METER_RECORD," pmr\n" +
             "WHERE\n" +
             "  pi.id = #{powerId}\n" +
             "AND\n" +
@@ -277,4 +278,34 @@ public interface PowerDao {
             "  0,1;\n" +
             ""})
     Double getPowerLastOneAtTime(@Param("powerId") Long powerId,@Param("time") String time);
+
+    /**
+     * 获取主键为{powerId}的电表当前时间之前的最后一条的用电情况+尖+峰+谷
+     * @param powerId
+     * @param time
+     * @return
+     */
+    @Select({"" +
+            "SELECT\n" +
+            "  pmr.read_time,\n" +
+            "  pmr.epp as power_value,\n" +
+            "  pmr.", TIP ," as tip,\n" +
+            "  pmr.", PEAK ," as peak,\n" +
+            "  pmr.", VALLY ," as vally\n" +
+            "FROM\n" +
+            "  ",TABLE_POWER_INFO," pi,\n" +
+            "  ",TABLE_POWER_METER_RECORD," pmr\n" +
+            "WHERE\n" +
+            "  pi.id = #{powerId}\n" +
+            "AND\n" +
+            "  pi.id=pmr.power_info_id\n" +
+            "AND\n" +
+            "  DATE (pmr.read_time)<=#{time}\n" +
+            "ORDER BY\n" +
+            "  pmr.read_time DESC\n" +
+            "LIMIT\n" +
+            "  0,1;" +
+            ""})
+    PowerPeakAndVallyDo getPowerPeakAndVallyAtTime(@Param("powerId") Long powerId,@Param("time") String time);
+
 }

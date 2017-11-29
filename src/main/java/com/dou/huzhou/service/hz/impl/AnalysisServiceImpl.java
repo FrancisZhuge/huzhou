@@ -1,8 +1,6 @@
 package com.dou.huzhou.service.hz.impl;
 
-import com.dou.huzhou.domain.hz.PowerAndWaterVo;
-import com.dou.huzhou.domain.hz.PowerDo;
-import com.dou.huzhou.domain.hz.PowerVo;
+import com.dou.huzhou.domain.hz.*;
 import com.dou.huzhou.service.hz.AnalysisService;
 import com.dou.huzhou.service.hz.PowerService;
 import com.dou.huzhou.utils.hz.TimeUtil;
@@ -37,11 +35,9 @@ public class AnalysisServiceImpl implements AnalysisService{
         String[] currentWeek = TimeUtil.getCurrentWeek();
 
         Long[] powerIds = powerService.getPowerIds(companyId);
-        double value = 0d;
         for(int i=0;i<powerIds.length;i++){
             for(int j=0;j<8;j++){
-                value = powerService.getPowerLastOneAtTime(powerIds[i],currentWeek[j]);
-                temp[j] += value;
+                temp[j] += powerService.getPowerLastOneAtTime(powerIds[i],currentWeek[j]);
             }
         }
         for(int i=0;i<7;i++){
@@ -55,5 +51,44 @@ public class AnalysisServiceImpl implements AnalysisService{
             powerVos.add(powerVo);
         }
         return powerVos;
+    }
+
+    @Override
+    public List<PowerPeakAndVallyVo> getEnergyConsumption(Long companyId) {
+        double[][] temp = new double[4][8];
+        double[][] powerValue = new double[4][7];
+        String[] currentWeek = TimeUtil.getCurrentWeek();
+        Long[] powerIds = powerService.getPowerIds(companyId);
+        for(int i=0;i<powerIds.length;i++){
+            for(int j=0;j<8;j++){
+                PowerPeakAndVallyDo powerPeakAndVallyDo = powerService.getPowerPeakAndVallyAtTime(powerIds[i], currentWeek[j]);
+
+                temp[0][j] += temp[0][j] + powerPeakAndVallyDo.getPowerValue();
+                temp[1][j] += temp[1][j] + powerPeakAndVallyDo.getTip();
+                temp[2][j] += temp[2][j] + powerPeakAndVallyDo.getPeak();
+                temp[3][j] += temp[3][j] + powerPeakAndVallyDo.getVally();
+            }
+        }
+        for(int i=0;i<4;i++){
+            for(int j=0;j<7;j++){
+                powerValue[i][j]=temp[i][j+1]-temp[i][j];
+            }
+        }
+        List<PowerPeakAndVallyVo> powerPeakAndVallyVos = new ArrayList<>();
+        for(int i=0;i<7;i++){
+            PowerPeakAndVallyVo powerPeakAndVally = new PowerPeakAndVallyVo();
+            powerPeakAndVally.setTime(currentWeek[i+1]);
+            powerPeakAndVally.setPowerValue(powerValue[0][i]);
+            powerPeakAndVally.setTip(powerValue[1][i]);
+            powerPeakAndVally.setPeak(powerValue[2][i]);
+            powerPeakAndVally.setVally(powerValue[3][i]);
+            powerPeakAndVallyVos.add(powerPeakAndVally);
+        }
+        return powerPeakAndVallyVos;
+    }
+
+    @Override
+    public List<PowerVo> getEnergyByMonth(Long companyId) {
+        return null;
     }
 }
