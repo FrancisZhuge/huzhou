@@ -19,13 +19,13 @@ import java.util.Date;
 public class TimeUtil {
     private final static Logger LOGGER = LoggerFactory.getLogger(TimeUtil.class);
     /**
-     * 将yyyyMMddhh装换为yyyy-MM-dd hh:mm:ss格式
+     * 将yyyy-MM-dd装换为yyyy-MM格式
      * @param before 转换之前的时间字符串
      * @return
      */
     public static String convertToStandard(String before){
-        SimpleDateFormat sdfBefore = new SimpleDateFormat("yyyyMMddhh");
-        SimpleDateFormat sdfAfter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat sdfBefore = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdfAfter = new SimpleDateFormat("yyyy-MM");
         Date date = null;
         String after = null;
         try {
@@ -189,7 +189,7 @@ public class TimeUtil {
      * @param month
      * @return
      */
-    public static String getFirstDayByYearMonthy(int year,int month){
+    public static String getFirstDayByYearMonth(int year,int month){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR,year);
@@ -217,8 +217,27 @@ public class TimeUtil {
         return strings;
     }
 
+    /**
+     * 获取今年的月份第一日期
+     * 和明年01-01这个日期
+     * @return
+     */
+    public static String[] getMonths(){
+        String[] strings = new String[13];
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal = Calendar.getInstance();
+
+        for (int i=0;i<12;i++){
+            cal.set(Calendar.MONTH,i);
+            cal.set(Calendar.DAY_OF_MONTH,1);
+            strings[i] = sdf.format(new Date(cal.getTimeInMillis()));
+        }
+        cal.add(Calendar.MONTH, 1);
+        strings[12] = sdf.format(new Date(cal.getTimeInMillis()));
+        return strings;
+    }
+
     public static void main(String[] args) {
-        String[] currentWeek = getCurrentWeek();
-        System.out.println(Arrays.toString(currentWeek));
+        System.out.println(Arrays.toString(getMonths()));
     }
 }

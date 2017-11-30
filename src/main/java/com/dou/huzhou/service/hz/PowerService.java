@@ -107,4 +107,12 @@ public interface PowerService {
      * @return
      */
     PowerPeakAndVallyDo getPowerPeakAndVallyAtTime(Long powerId,String time);
+
+    /**
+     * 获取主键为{powerId}的电表当前时间之前的最后一条的用电情况
+     * @param powerId
+     * @param time
+     * @return
+     */
+    Double getPowerAtFixedTime(Long powerId, String time);
 }

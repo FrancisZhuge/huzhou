@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -89,6 +90,25 @@ public class AnalysisServiceImpl implements AnalysisService{
 
     @Override
     public List<PowerVo> getEnergyByMonth(Long companyId) {
-        return null;
+        double[] temp = new double[13];
+        double[] powerValue = new double[12];
+        String[] times = TimeUtil.getMonths();
+        Long[] powerIds = powerService.getPowerIds(companyId);
+        for(int i=0;i<powerIds.length;i++){
+            for(int j=0;j<13;j++){
+                temp[j] +=  powerService.getPowerAtFixedTime(powerIds[i],times[j]);
+            }
+        }
+        for (int i=0;i<12;i++){
+            powerValue[i]=temp[i+1]-temp[i];
+        }
+        List<PowerVo> powerVos = new ArrayList<>();
+        for(int i=0;i<12;i++){
+            PowerVo powerVo = new PowerVo();
+            powerVo.setTime(TimeUtil.convertToStandard(times[i]));
+            powerVo.setPowerValue(powerValue[i]);
+            powerVos.add(powerVo);
+        }
+        return powerVos;
     }
 }

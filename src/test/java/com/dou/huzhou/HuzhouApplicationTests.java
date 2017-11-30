@@ -59,8 +59,8 @@ public class HuzhouApplicationTests {
 	private AnalysisService analysisService;
 	@Test
 	public void contextLoads() {
-		List<PowerPeakAndVallyVo> energyConsumption = analysisService.getEnergyConsumption(1L);
-		for(PowerPeakAndVallyVo powerPeakAndVallyVo:energyConsumption){
+		List<PowerVo> energyByMonth = analysisService.getEnergyByMonth(1L);
+		for(PowerVo powerPeakAndVallyVo:energyByMonth){
 			System.out.println(powerPeakAndVallyVo);
 		}
 	}

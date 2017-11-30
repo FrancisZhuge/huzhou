@@ -142,7 +142,7 @@ public class PowerServiceImpl implements PowerService{
     public PeakAndVallyDo getLastMonthPeakAndVally(int year, int month, Long powerId) {
         PeakAndVallyDo peakAndVallyDo = null;
         try {
-            peakAndVallyDo = powerDao.getLastMonthPeakAndVally(TimeUtil.getFirstDayByYearMonthy(year,month),powerId);
+            peakAndVallyDo = powerDao.getLastMonthPeakAndVally(TimeUtil.getFirstDayByYearMonth(year,month),powerId);
         } catch (Exception e) {
             LOGGER.error("getLastMonthPeakAndVally failed.");
         }
@@ -184,5 +184,18 @@ public class PowerServiceImpl implements PowerService{
             powerPeakAndVallyDo.setVally(0D);
         }
         return powerPeakAndVallyDo;
+    }
+
+    @Override
+    public Double getPowerAtFixedTime(Long powerId, String time) {
+        Double value = null;
+        try{
+            value = powerDao.getPowerAtFixedTime(powerId,time);
+        }catch (Exception e) {
+            LOGGER.error("getPowerAtFixedTime failed.");
+        }
+        if(value == null)
+            return 0D;
+        return value;
     }
 }
