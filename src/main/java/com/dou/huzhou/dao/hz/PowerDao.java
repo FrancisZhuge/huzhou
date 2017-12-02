@@ -39,7 +39,21 @@ public interface PowerDao {
      * @param id 电表的id
      * @return
      */
-    @Select({" select epp from ", TABLE_POWER_METER_RECORD ," where power_info_id = #{id} order by read_time desc limit 0,1"})
+    @Select({"" +
+            "SELECT\n" +
+            "  pmr.epp\n" +
+            "FROM\n" +
+            "  ", TABLE_POWER_INFO ," pi,\n" +
+            "  ", TABLE_POWER_METER_RECORD ," pmr\n" +
+            "WHERE\n" +
+            "  pi.id = #{id}\n" +
+            "AND\n" +
+            "  pi.id=pmr.power_info_id\n" +
+            "ORDER BY\n" +
+            "  pmr.read_time DESC\n" +
+            "LIMIT\n" +
+            "  0,1;" +
+            ""})
     Double getLastValue(@Param("id") Long id);
 
     /**
@@ -332,5 +346,29 @@ public interface PowerDao {
             "  0,1;" +
             ""})
     Double getPowerAtFixedTime(@Param("powerId") Long powerId,@Param("time") String time);
+
+    /**
+     * 获取今天的读数
+     * @param powerId
+     * @return
+     */
+    @Select({"" +
+            "SELECT\n" +
+            "  pmr.epp\n" +
+            "FROM\n" +
+            "  ",TABLE_POWER_INFO," pi,\n" +
+            "  ",TABLE_POWER_METER_RECORD," pmr\n" +
+            "WHERE\n" +
+            "  pi.id = #{powerId}\n" +
+            "AND\n" +
+            "  pi.id=pmr.power_info_id\n" +
+            "AND\n" +
+            "  DATE (pmr.read_time)=DATE (now())\n" +
+            "ORDER BY\n" +
+            "  pmr.read_time DESC\n" +
+            "LIMIT\n" +
+            "  0,1;" +
+            ""})
+    Double getPowerToday(@Param("powerId") Long powerId);
 
 }

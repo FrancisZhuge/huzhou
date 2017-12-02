@@ -25,4 +25,18 @@ public interface CompanyService {
      * @return
      */
     Company getById(Long id);
+
+    /**
+     * 根据园区id获取园区下面所有的公司主键
+     * @param areaId
+     * @return
+     */
+    Long[] getCompanyIds(Long areaId);
+
+    /**
+     * 根据公司的主键获取公司的名称
+     * @param id
+     * @return
+     */
+    String getCompanyNameById(Long id);
 }

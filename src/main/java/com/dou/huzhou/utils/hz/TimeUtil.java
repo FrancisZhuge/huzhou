@@ -237,7 +237,47 @@ public class TimeUtil {
         return strings;
     }
 
+    /**
+     * 如果time1是更后的时间
+     * 返回true
+     * 否则返回false
+     * @param time1
+     * @param time2
+     * @return
+     */
+    public static int isLater(String time1,String time2){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        Date date1 = null;
+        Date date2 = null;
+        try {
+            date1 = sdf.parse(time1);
+            date2 = sdf.parse(time2);
+
+        }catch (Exception e){
+            LOGGER.error("isLater failed. ");
+        }
+        if(date1.getTime()<date2.getTime()){
+            return 1;
+        }else if(date1.getTime()>date2.getTime()){
+            return -1;
+        }else {
+            return 0;
+        }
+    }
+
+    /**
+     * 获取当天的0点0分
+     * @return
+     */
+    public static String getZeroTimeToady(){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
+        Calendar cal = Calendar.getInstance();
+        Date date = new Date(cal.getTimeInMillis());
+        String format = sdf.format(date);
+        return format;
+    }
+
     public static void main(String[] args) {
-        System.out.println(Arrays.toString(getMonths()));
+        System.out.println(getZeroTimeToady());
     }
 }

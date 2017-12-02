@@ -123,4 +123,17 @@ public class WaterServiceImpl implements WaterService{
         }
         return value;
     }
+
+    @Override
+    public Double getWaterToday(Long waterId) {
+        Double value = null;
+        try{
+            value = waterDao.getWaterToday(waterId);
+        }catch (Exception e) {
+            LOGGER.error("getWaterToday failed.");
+        }
+        if(value == null)
+            return 0D;
+        return value;
+    }
 }

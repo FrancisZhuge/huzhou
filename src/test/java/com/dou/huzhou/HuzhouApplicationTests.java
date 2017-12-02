@@ -57,11 +57,18 @@ public class HuzhouApplicationTests {
 
 	@Autowired
 	private AnalysisService analysisService;
+
+	@Autowired
+	private StatisticsService statisticsService;
+
+	@Autowired
+	private ManagerService managerService;
+
 	@Test
 	public void contextLoads() {
-		List<PowerVo> energyByMonth = analysisService.getEnergyByMonth(1L);
-		for(PowerVo powerPeakAndVallyVo:energyByMonth){
-			System.out.println(powerPeakAndVallyVo);
+		List<EnergyConsumptionVo> energyList = managerService.getEnergyList();
+		for(EnergyConsumptionVo energyConsumptionVo:energyList){
+			System.out.println(energyConsumptionVo);
 		}
 	}
 }

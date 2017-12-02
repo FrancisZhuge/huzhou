@@ -49,6 +49,8 @@ public class PowerServiceImpl implements PowerService{
         } catch (Exception e) {
             LOGGER.error("getLastValue failed.");
         }
+        if (value == null)
+            return 0D;
         return value;
     }
 
@@ -193,6 +195,19 @@ public class PowerServiceImpl implements PowerService{
             value = powerDao.getPowerAtFixedTime(powerId,time);
         }catch (Exception e) {
             LOGGER.error("getPowerAtFixedTime failed.");
+        }
+        if(value == null)
+            return 0D;
+        return value;
+    }
+
+    @Override
+    public Double getPowerToday(Long powerId) {
+        Double value = null;
+        try{
+            value = powerDao.getPowerToday(powerId);
+        }catch (Exception e) {
+            LOGGER.error("getPowerToday failed.");
         }
         if(value == null)
             return 0D;

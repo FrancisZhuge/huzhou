@@ -71,4 +71,11 @@ public interface WaterService {
      */
     Double getWaterLastOneYesterday(int day, Long waterId);
 
+    /**
+     * 获取今天的读数
+     * @param waterId
+     * @return
+     */
+    Double getWaterToday(Long waterId);
+
 }

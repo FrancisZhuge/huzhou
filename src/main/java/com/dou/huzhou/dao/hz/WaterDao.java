@@ -31,7 +31,21 @@ public interface WaterDao {
      * @param id
      * @return
      */
-    @Select({" select consumption from ", TABLE_WATER_METER_RECORD ," where water_info_id = #{id} order by read_time desc limit 0,1"})
+    @Select({"" +
+            "SELECT\n" +
+            "  wmr.consumption\n" +
+            "FROM\n" +
+            "  ", TABLE_WATER_INFO ," wi,\n" +
+            "  ", TABLE_WATER_METER_RECORD ," wmr\n" +
+            "WHERE\n" +
+            "  wi.id = #{id}\n" +
+            "AND\n" +
+            "  wi.id=wmr.water_info_id\n" +
+            "ORDER BY\n" +
+            "  wmr.read_time DESC\n" +
+            "LIMIT \n" +
+            "  0,1;" +
+            ""})
     Double getLastValue(@Param("id") Long id);
 
     /**
@@ -182,5 +196,29 @@ public interface WaterDao {
             "  0,1;" +
             ""})
     Double getWaterLastOneYesterdayByDay(@Param("time") String time, @Param("waterId") Long waterId);
+
+    /**
+     * 获取今天的读数
+     * @param waterId
+     * @return
+     */
+    @Select({"" +
+            "SELECT\n" +
+            "  wmr.consumption\n" +
+            "FROM\n" +
+            "  ", TABLE_WATER_INFO ," wi,\n" +
+            "  ", TABLE_WATER_METER_RECORD ," wmr\n" +
+            "WHERE\n" +
+            "  wi.id = #{waterId}\n" +
+            "AND\n" +
+            "  wi.id=wmr.water_info_id\n" +
+            "AND\n" +
+            "  DATE (wmr.read_time)=DATE (now())\n" +
+            "ORDER BY\n" +
+            "  wmr.read_time DESC\n" +
+            "LIMIT\n" +
+            "  0,1;" +
+            ""})
+    Double getWaterToday(@Param("waterId") Long waterId);
 
 }

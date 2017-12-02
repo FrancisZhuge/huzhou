@@ -31,4 +31,34 @@ public interface CompanyDao {
      */
     @Select({" select ",SELECT_FIELDS," from ",TABLE_COMPANY_INFO," where id = #{id}"})
     Company getById(@Param("id") Long id);
+
+    /**
+     * 根据园区id查找公司的主键
+     * @param areaId
+     * @return
+     */
+    @Select({"" +
+            "SELECT\n" +
+            "  id\n" +
+            "FROM\n" +
+            "  company_info\n" +
+            "WHERE\n" +
+            "  area_id = #{areaId};" +
+            ""})
+    Long[] getCompanyIds(@Param("areaId") Long areaId);
+
+    /**
+     * 根据公司的主键查找公司的名称
+     * @param id
+     * @return
+     */
+    @Select({"" +
+            "SELECT\n" +
+            "  company_name\n" +
+            "FROM\n" +
+            "  company_info\n" +
+            "WHERE\n" +
+            "  id = #{id};" +
+            ""})
+    String getCompanyNameById(@Param("id") Long id);
 }

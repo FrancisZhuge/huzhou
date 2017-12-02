@@ -115,4 +115,11 @@ public interface PowerService {
      * @return
      */
     Double getPowerAtFixedTime(Long powerId, String time);
+
+    /**
+     * 获取今天的读数
+     * @param powerId
+     * @return
+     */
+    Double getPowerToday(Long powerId);
 }

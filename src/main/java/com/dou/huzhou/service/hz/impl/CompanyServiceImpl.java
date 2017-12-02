@@ -22,14 +22,14 @@ public class CompanyServiceImpl implements CompanyService{
     private final static Logger LOGGER = LoggerFactory.getLogger(BuildingServiceImpl.class);
 
     @Autowired
-    private CompanyDao CompanyDao;
+    private CompanyDao companyDao;
 
     @Override
     public String getCompanyNo(Long id) {
         String returnValue = null;
         String areaNo = null;
         try {
-            areaNo = CompanyDao.getCompanyNo(id);
+            areaNo = companyDao.getCompanyNo(id);
         } catch (Exception e) {
             LOGGER.error("getBuildingNo failed. ");
         }
@@ -40,10 +40,32 @@ public class CompanyServiceImpl implements CompanyService{
     public Company getById(Long id) {
         Company returnValue = null;
         try {
-            returnValue = CompanyDao.getById(id);
+            returnValue = companyDao.getById(id);
         } catch (Exception e) {
             LOGGER.error("getById failed. ");
         }
         return returnValue;
+    }
+
+    @Override
+    public Long[] getCompanyIds(Long areaId) {
+        Long[] companyIds = null;
+        try {
+            companyIds = companyDao.getCompanyIds(areaId);
+        } catch (Exception e) {
+            LOGGER.error("getCompanyIds failed. ");
+        }
+        return companyIds;
+    }
+
+    @Override
+    public String getCompanyNameById(Long id) {
+        String companyName = null;
+        try {
+            companyName = companyDao.getCompanyNameById(id);
+        } catch (Exception e) {
+            LOGGER.error("getCompanyNameById failed. ");
+        }
+        return companyName;
     }
 }
